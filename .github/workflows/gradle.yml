@@ -11,9 +11,10 @@ on:
 
 jobs:
   build-jdk:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
+        operating-system: [ubuntu-latest, macOS-latest]
         # Test with LTS releases
         jdk: [ 8, 11 ]
     steps:
