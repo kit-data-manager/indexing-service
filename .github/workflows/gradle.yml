@@ -25,10 +25,8 @@ jobs:
         java-version: ${{ matrix.jdk }}
         distribution: 'zulu'  # =openJDK
         cache: gradle
-    - name: Pull elasticsearch image from docker
-      run: docker pull elasticsearch:7.9.3
-    - name: Create and run elasticsearch container
-      run: docker run -d --name elasticsearch4metastore  -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3
+    - name: Set up elasticsearch
+      run: docker compose up -d elasticsearch
     - name: Install python
       run: sudo apt-get install --assume-yes python3 python3-setuptools python3-pip 
     - name: Update pip
@@ -43,4 +41,6 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         files: ./build/reports/jacoco/test/jacocoTestReport.xml #optional
+    - name: Shut down elasticsearch
+      run: docker compose down
       
