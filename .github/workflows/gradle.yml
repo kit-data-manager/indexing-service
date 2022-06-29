@@ -14,19 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # Use both LTS releases and latest one
-        jdk: [ 8, 13 ]
+        # Test with LTS releases
+        jdk: [ 8, 11 ]
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Set up OpenJDK
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v3
       with:
         java-version: ${{ matrix.jdk }}
-    - name: Pull elasticsearch image from docker
-      run: docker pull elasticsearch:7.9.3
-    - name: Create and run elasticsearch container
-      run: docker run -d --name elasticsearch4metastore  -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3
+        distribution: 'zulu'  # =openJDK
+        cache: gradle
+    - name: Set up elasticsearch
+      run: docker compose up -d elasticsearch
     - name: Install python
       run: sudo apt-get install --assume-yes python3 python3-setuptools python3-pip 
     - name: Update pip
@@ -41,4 +41,6 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         files: ./build/reports/jacoco/test/jacocoTestReport.xml #optional
+    - name: Shut down elasticsearch
+      run: docker compose down
       
