@@ -29,7 +29,10 @@ apply plugin: 'io.spring.dependency-management'
 description = 'Generic indexing service supporting different mapping implementations.'
 group = 'edu.kit.datamanager'
 
+println "Running gradle version: $gradle.gradleVersion"
 println "Building ${name} version: ${version}"
+println "JDK version: ${JavaVersion.current()}"
+
 
 
 repositories {
