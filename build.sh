@@ -84,7 +84,7 @@ echo "--------------------------------------------------------------------------
 ################################################################################
 # Test for commands used in this script
 ################################################################################
-testForCommands="chmod cp dirname find java javac mkdir"
+testForCommands="chmod cp dirname find java javac mkdir sed"
 
 for command in $testForCommands
 do 
@@ -124,7 +124,7 @@ echo Build service...
 
 
 echo "Copy configuration to '$INSTALLATION_DIRECTORY'..."
-find . -name application-default.properties -exec cp '{}' "$INSTALLATION_DIRECTORY"/application.properties \;
+find . -name application-default.properties -exec sed -e "s/src\/test\/resources\/python/scripts\/python/g" '{}' > "$INSTALLATION_DIRECTORY"/application.properties \;
 
 echo "Copy jar file to '$INSTALLATION_DIRECTORY'..."
 find . -name "$REPO_NAME*.jar" -exec cp '{}' "$INSTALLATION_DIRECTORY" \;
@@ -134,6 +134,10 @@ mkdir "$INSTALLATION_DIRECTORY"/config
 
 echo "Create lib directory"
 mkdir "$INSTALLATION_DIRECTORY"/lib
+
+echo "Copy python scripts..."
+mkdir -p "$INSTALLATION_DIRECTORY"/scripts/python
+cp src/test/resources/python/*.py "$INSTALLATION_DIRECTORY"/scripts/python
 
 ###############################################################################
 # Create run script
@@ -155,6 +159,8 @@ echo "# |- run.sh                    - Start script    "                        
 echo "# |- lib/                      - Directory for plugins (if supported)"                    >> run.sh
 echo "# |- config/ "                                                                            >> run.sh
 echo "#    |- application.properties - Overwrites default configuration (optional)"             >> run.sh
+echo "# |- scripts/ "                                                                            >> run.sh
+echo "#    |- python                  - Python scripts for GEMMA"                                >> run.sh
 echo "################################################################################"         >> run.sh
 echo " "                                                                                        >> run.sh
 echo "################################################################################"         >> run.sh
