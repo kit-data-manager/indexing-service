@@ -15,6 +15,7 @@
  */
 package edu.kit.datamanager.indexer.service.impl;
 
+import com.google.gson.Gson;
 import edu.kit.datamanager.indexer.configuration.ApplicationProperties;
 import edu.kit.datamanager.indexer.dao.IMappingRecordDao;
 import edu.kit.datamanager.indexer.domain.MappingRecord;
@@ -24,6 +25,7 @@ import edu.kit.datamanager.indexer.mapping.MappingUtil;
 import edu.kit.datamanager.indexer.util.IndexerUtil;
 import edu.kit.datamanager.indexer.util.TokenUtil;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,6 +42,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import net.minidev.json.writer.JsonReader;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -72,7 +75,7 @@ public class MappingService {
    * MappingUtil for executing mappings.
    */
   private MappingUtil mappingUtil;
-  
+
   /**
    * Utility for bearer tokens to enable authorized access.
    */
@@ -196,6 +199,13 @@ public class MappingService {
     if (executeMapping.isPresent()) {
       returnValue.add(executeMapping.get());
     }
+    // Try to add ACL
+    Gson gson = new Gson();
+    JsonReader reader = new JsonReader(new FileReader(executeMapping.get().toFile()));
+    JsonElement metadataDocument = gson.fromJson(json, JsonElement.class);
+    // Try to read ACL from contentURI
+    ToDo
+    ...
 
     return returnValue;
   }
