@@ -34,6 +34,12 @@ import org.springframework.validation.annotation.Validated;
 public class ApplicationProperties extends GenericPluginProperties {
 
   /**
+   * Secret for generating tokens for authorized access to secured services.
+   */
+  @Value(value = "${repo.auth.jwtSecret}")
+  private String jwtSecret;
+
+  /**
    * The absolute path to the python interpreter.
    */
   @edu.kit.datamanager.annotations.ExecutableFileURL
