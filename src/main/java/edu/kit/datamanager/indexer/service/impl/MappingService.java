@@ -22,6 +22,7 @@ import edu.kit.datamanager.indexer.exception.IndexerException;
 import edu.kit.datamanager.indexer.mapping.Mapping;
 import edu.kit.datamanager.indexer.mapping.MappingUtil;
 import edu.kit.datamanager.indexer.util.IndexerUtil;
+import edu.kit.datamanager.indexer.util.TokenUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -71,7 +72,11 @@ public class MappingService {
    * MappingUtil for executing mappings.
    */
   private MappingUtil mappingUtil;
-
+  
+  /**
+   * Utility for bearer tokens to enable authorized access.
+   */
+  private TokenUtil tokenUtil;
   /**
    * Logger for this class.
    */
@@ -144,7 +149,7 @@ public class MappingService {
    */
   public Optional<Path> executeMapping(URI contentUrl, String mappingId, String mappingType) {
     Optional<Path> returnValue = Optional.ofNullable(null);
-    Optional<Path> download = IndexerUtil.downloadResource(contentUrl);
+    Optional<Path> download = IndexerUtil.downloadResource(contentUrl, tokenUtil);
     MappingRecord mappingRecord = null;
 
     if (download.isPresent()) {
@@ -211,6 +216,7 @@ public class MappingService {
     } else {
       throw new IndexerException("Could not initialize mapping directory due to missing location!");
     }
+    tokenUtil = new TokenUtil(applicationProperties.getJwtSecret());
   }
 
   /**
