@@ -15,9 +15,14 @@
  */
 package edu.kit.datamanager.indexer.service.impl;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.datamanager.indexer.configuration.ApplicationProperties;
 import edu.kit.datamanager.indexer.dao.IMappingRecordDao;
+import edu.kit.datamanager.indexer.domain.AclRecord;
 import edu.kit.datamanager.indexer.domain.MappingRecord;
 import edu.kit.datamanager.indexer.exception.IndexerException;
 import edu.kit.datamanager.indexer.mapping.Mapping;
@@ -25,7 +30,6 @@ import edu.kit.datamanager.indexer.mapping.MappingUtil;
 import edu.kit.datamanager.indexer.util.IndexerUtil;
 import edu.kit.datamanager.indexer.util.TokenUtil;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,7 +46,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import net.minidev.json.writer.JsonReader;
+import java.util.logging.Level;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -177,7 +181,7 @@ public class MappingService {
     }
     return returnValue;
   }
-
+    
   /**
    * Execute mapping(s) and get the location of result file.
    *
@@ -199,14 +203,45 @@ public class MappingService {
     if (executeMapping.isPresent()) {
       returnValue.add(executeMapping.get());
     }
-    // Try to add ACL
-    Gson gson = new Gson();
-    JsonReader reader = new JsonReader(new FileReader(executeMapping.get().toFile()));
-    JsonElement metadataDocument = gson.fromJson(json, JsonElement.class);
-    // Try to read ACL from contentURI
-    ToDo
-    ...
-
+		JsonFactory jsonFactory = new JsonFactory();
+		JsonParser jp = null;
+    try {
+      jp = jsonFactory.createJsonParser(new File("src/test/resources/examples/gemma/simple.json"));
+    } catch (IOException ex) {
+      java.util.logging.Logger.getLogger(MappingService.class.getName()).log(Level.SEVERE, null, ex);
+    }
+		jp.setCodec(new ObjectMapper());
+		JsonNode jsonNode = null;
+    try {
+      jsonNode = jp.readValueAsTree();
+    } catch (IOException ex) {
+      java.util.logging.Logger.getLogger(MappingService.class.getName()).log(Level.SEVERE, null, ex);
+    }
+   // Try to read ACL from contentURI
+    try {
+   AclRecord aclRecord = new AclRecord();
+      
+      mapper.writeValue(executeMapping.get().toFile(), aclRecord);
+    } catch (JsonProcessingException ex) {
+      java.util.logging.Logger.getLogger(MappingService.class.getName()).log(Level.SEVERE, null, ex);
+    }
+//    // Try to add ACL
+// 		JsonFactory jsonFactory = new JsonFactory();
+//		JsonParser jp;
+//    try {
+//      jp = JsonParser.createJsonParser(executeMapping.get().toFile());
+//    } catch (IOException ex) {
+//      java.util.logging.Logger.getLogger(MappingService.class.getName()).log(Level.SEVERE, null, ex);
+//    }
+//		jp.setCodec(new ObjectMapper());
+//		JsonNode jsonNode = jp.readValueAsTree();
+//   // Try to read ACL from contentURI
+//   final AclRecord readValue = mapper.readValue(executeMapping.get().toFile(), AclRecord.class);
+//   readValue.setMetadataDocument(jsonNode);
+//   
+//    ToDo
+//    ...
+//
     return returnValue;
   }
 
