@@ -34,6 +34,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 
 /**
  */
@@ -96,6 +97,7 @@ public class IndexerUtil {
         String compactToken = tokenHandler == null ? null : tokenHandler.getCompactToken(30);
         if (resourceURL.getHost() != null) {
           SimpleServiceClient ssc = SimpleServiceClient.create(resourceURL.toString());
+          ssc.accept(MediaType.TEXT_PLAIN);
           if (compactToken != null) {
             ssc.withBearerToken(compactToken);
           }

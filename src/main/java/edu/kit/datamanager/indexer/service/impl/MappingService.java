@@ -15,11 +15,10 @@
  */
 package edu.kit.datamanager.indexer.service.impl;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.kit.datamanager.clients.SimpleServiceClient;
+import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.indexer.configuration.ApplicationProperties;
 import edu.kit.datamanager.indexer.dao.IMappingRecordDao;
 import edu.kit.datamanager.indexer.domain.AclRecord;
@@ -28,11 +27,13 @@ import edu.kit.datamanager.indexer.exception.IndexerException;
 import edu.kit.datamanager.indexer.mapping.Mapping;
 import edu.kit.datamanager.indexer.mapping.MappingUtil;
 import edu.kit.datamanager.indexer.util.IndexerUtil;
+import static edu.kit.datamanager.indexer.util.IndexerUtil.DEFAULT_SUFFIX;
 import edu.kit.datamanager.indexer.util.TokenUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,9 +47,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,7 +182,7 @@ public class MappingService {
     }
     return returnValue;
   }
-    
+
   /**
    * Execute mapping(s) and get the location of result file.
    *
@@ -202,46 +203,48 @@ public class MappingService {
     Optional<Path> executeMapping = executeMapping(contentUrl, mappingId, mappingType);
     if (executeMapping.isPresent()) {
       returnValue.add(executeMapping.get());
+      Path metadataDocumentPath = executeMapping.get();
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode rootNode = null;
+      String jsonString;
+      try {
+        jsonString = FileUtils.readFileToString(metadataDocumentPath.toFile(), Charset.forName("UTF-8"));
+        rootNode = mapper.readValue(jsonString, JsonNode.class);
+      } catch (IOException ex) {
+        LOGGER.error("Error parsing metadata document", ex);
+        throw new BadArgumentException(ex.getMessage());
+      }
+      // Try to read ACL from contentURI
+      try {
+        AclRecord aclRecord = new AclRecord();
+
+        try {
+          if (contentUrl != null) {
+            String suffix = FilenameUtils.getExtension(contentUrl.getPath());
+            suffix = suffix.trim().isEmpty() ? DEFAULT_SUFFIX : "." + suffix;
+            String compactToken = tokenUtil == null ? null : tokenUtil.getCompactToken(30);
+            if (contentUrl.getHost() != null) {
+              SimpleServiceClient ssc = SimpleServiceClient.create(contentUrl.toString());
+              ssc.accept(AclRecord.ACL_RECORD_MEDIA_TYPE);
+              if (compactToken != null) {
+                ssc.withBearerToken(compactToken);
+              }
+              AclRecord aclRecordFromServer = ssc.getResource(AclRecord.class);
+              if (aclRecordFromServer != null) {
+                aclRecord = aclRecordFromServer;
+              }
+            }
+          }
+        } catch (Throwable tw) {
+          LOGGER.warn("Error reading ACL from URI '" + contentUrl.toString() + "'", tw);
+          //throw new IndexerException("Error downloading resource from '" + contentUrl.toString() + "'!", tw);
+        }
+        aclRecord.setMetadataDocument(rootNode);
+        mapper.writeValue(executeMapping.get().toFile(), aclRecord);
+      } catch (IOException ex) {
+        LOGGER.error("Error while reading mapped file!?", ex);
+      }
     }
-		JsonFactory jsonFactory = new JsonFactory();
-		JsonParser jp = null;
-    try {
-      jp = jsonFactory.createJsonParser(new File("src/test/resources/examples/gemma/simple.json"));
-    } catch (IOException ex) {
-      java.util.logging.Logger.getLogger(MappingService.class.getName()).log(Level.SEVERE, null, ex);
-    }
-		jp.setCodec(new ObjectMapper());
-		JsonNode jsonNode = null;
-    try {
-      jsonNode = jp.readValueAsTree();
-    } catch (IOException ex) {
-      java.util.logging.Logger.getLogger(MappingService.class.getName()).log(Level.SEVERE, null, ex);
-    }
-   // Try to read ACL from contentURI
-    try {
-   AclRecord aclRecord = new AclRecord();
-      
-      mapper.writeValue(executeMapping.get().toFile(), aclRecord);
-    } catch (JsonProcessingException ex) {
-      java.util.logging.Logger.getLogger(MappingService.class.getName()).log(Level.SEVERE, null, ex);
-    }
-//    // Try to add ACL
-// 		JsonFactory jsonFactory = new JsonFactory();
-//		JsonParser jp;
-//    try {
-//      jp = JsonParser.createJsonParser(executeMapping.get().toFile());
-//    } catch (IOException ex) {
-//      java.util.logging.Logger.getLogger(MappingService.class.getName()).log(Level.SEVERE, null, ex);
-//    }
-//		jp.setCodec(new ObjectMapper());
-//		JsonNode jsonNode = jp.readValueAsTree();
-//   // Try to read ACL from contentURI
-//   final AclRecord readValue = mapper.readValue(executeMapping.get().toFile(), AclRecord.class);
-//   readValue.setMetadataDocument(jsonNode);
-//   
-//    ToDo
-//    ...
-//
     return returnValue;
   }
 
