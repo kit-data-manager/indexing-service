@@ -37,15 +37,15 @@ public class AclRecord implements Serializable {
 
   public final static MediaType ACL_RECORD_MEDIA_TYPE = MediaType.valueOf(RESOURCE_TYPE);
 
+  public final static String METADATA_RECORD_TYPE = "application/vnd.datamanager.metadata-record+json";
+
+  public final static MediaType METADATA_RECORD_MEDIA_TYPE = MediaType.valueOf(METADATA_RECORD_TYPE);
+
   @NotNull(message = "A list of access control entries for resticting access for READ.")
   @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-  private final Set<String> read = new HashSet<>();
-  @NotNull(message = "A list of access control entries for resticting access for WRITE.")
-  @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-  private final Set<String> write = new HashSet<>();
-  @NotNull(message = "A list of access control entries for resticting access for ADMINISTRATION.")
-  @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-  private final Set<String> admin = new HashSet<>();
+  private final Set<String> readSids = new HashSet<>();
+  @NotBlank(message = "The metadata record.")
+  private Object metadataRecord;
   @NotBlank(message = "The metadata document.")
   private Object metadataDocument;
 

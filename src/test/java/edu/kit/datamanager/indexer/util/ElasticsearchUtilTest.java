@@ -66,7 +66,7 @@ public class ElasticsearchUtilTest {
   @Test
   public void testIsValid() throws MalformedURLException {
     System.out.println("isValid");
-    URL value = new URL("http://localhost:9200");
+    URL value = new URL("http://localhost:41200");
     boolean expResult = true;
     boolean result = ElasticsearchUtil.testForElasticsearch(value);
     assertEquals(expResult, result);
@@ -75,11 +75,11 @@ public class ElasticsearchUtilTest {
   @Test
   public void testIsInvalidUrl() throws MalformedURLException {
     System.out.println("testIsInvalidUrl");
-    URL value = new URL("http://localhost:9201");
+    URL value = new URL("http://localhost:41201");
     boolean expResult = false;
     boolean result = ElasticsearchUtil.testForElasticsearch(value);
     assertEquals(expResult, result);
-    value = new URL("http://localhost:9200/");
+    value = new URL("http://localhost:41200/");
     result = ElasticsearchUtil.testForElasticsearch(value);
     assertEquals(expResult, result);
   }

@@ -80,7 +80,7 @@ import org.springframework.web.context.WebApplicationContext;
   TransactionalTestExecutionListener.class,
   WithSecurityContextTestExecutionListener.class})
 @ActiveProfiles("test")
-@TestPropertySource(properties = {"server.port=41300"})
+@TestPropertySource(properties = {"server.port=41600"})
 public class MappingControllerTest {
 
   private final static String TEMP_DIR_4_ALL = "/tmp/metastore2/";

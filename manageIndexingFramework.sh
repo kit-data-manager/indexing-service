@@ -13,6 +13,7 @@
 ################################################################################
 DOCKER_NETWORK=network4indexing
 DOCKER_ELASTIC=elastic4indexing
+DOCKER_ELASTIC_TEST=elastic4test
 DOCKER_INDEXING=indexing4docker
 DOCKER_METASTORE=metastore4indexing
 DOCKER_RABBIT=rabbitmq4indexing
@@ -68,11 +69,11 @@ echo "Start elasticsearch server..."
 deleteDockerContainer $DOCKER_ELASTIC
 docker run -d --net $DOCKER_NETWORK --name $DOCKER_ELASTIC  -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3
 
-echo "Start Indexing-Service..."
-deleteDockerContainer $DOCKER_INDEXING
-docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/indexing-service/config --net $DOCKER_NETWORK --name $DOCKER_INDEXING  -p 8050:8050 indexing-service:latest
+#echo "Start Indexing-Service..."
+#deleteDockerContainer $DOCKER_INDEXING
+#docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/indexing-service/config --net $DOCKER_NETWORK --name $DOCKER_INDEXING  -p 8050:8050 indexing-service:latest
 
-printInfo "Ready to use metastore"
+#printInfo "Ready to use metastore"
 }
 
 ################################################################################
@@ -80,14 +81,25 @@ function initTest {
 ################################################################################
 printInfo "Setup Test Framework"
 
-echo "Setup network for docker..."
-docker network create $DOCKER_NETWORK
+#echo "Start elasticsearch server..."
+deleteDockerContainer $DOCKER_ELASTIC_TEST
+docker run -d --name $DOCKER_ELASTIC_TEST  -p 41200:9200 -p 41300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3
 
-echo "Start elasticsearch server..."
-deleteDockerContainer $DOCKER_ELASTIC
-docker run -d --net $DOCKER_NETWORK --name $DOCKER_ELASTIC  -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3
+echo "Wait until server is up and running. This may last some seconds..."
+wget localhost:41200 -o /dev/null
 
-printInfo "Ready to use indexing service"
+printInfo "Ready to use indexing service 4 test"
+}
+
+################################################################################
+function finishTest {
+################################################################################
+printInfo "Shutdown Test Framework"
+
+echo "Stop elasticsearch server..."
+docker stop $DOCKER_ELASTIC_TEST
+
+printInfo "Indexing service 4 test stopped."
 }
 
 ################################################################################
@@ -191,6 +203,8 @@ case "$1" in
   start) startFramework
      ;;
   test) initTest
+     ;;
+  stop_test) finishTest
      ;;
   stop) stopFramework
       ;;

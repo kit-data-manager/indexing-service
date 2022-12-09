@@ -57,7 +57,7 @@ public class ElasticsearchValidatorTest {
   @Test
   public void testIsValid() throws MalformedURLException {
     System.out.println("isValid");
-    URL value = new URL("http://localhost:9200");
+    URL value = new URL("http://localhost:41200");
     ConstraintValidatorContext context = null;
     ElasticsearchValidator instance = new ElasticsearchValidator();
     boolean expResult = true;
@@ -67,13 +67,13 @@ public class ElasticsearchValidatorTest {
   @Test
   public void testIsInvalidUrl() throws MalformedURLException {
     System.out.println("testIsInvalidUrl");
-    URL value = new URL("http://localhost:9201");
+    URL value = new URL("http://localhost:41201");
     ConstraintValidatorContext context = null;
     ElasticsearchValidator instance = new ElasticsearchValidator();
     boolean expResult = false;
     boolean result = instance.isValid(value, context);
     assertEquals(expResult, result);
-    value = new URL("http://localhost:9200/");
+    value = new URL("http://localhost:41200/");
     result = instance.isValid(value, context);
     assertEquals(expResult, result);
   }

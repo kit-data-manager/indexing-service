@@ -117,7 +117,7 @@ public class IndexingService {
               HttpMethod.PUT,
               entity,
               String.class,
-              urlEncode(document_id));
+              document_id);
     } catch (Exception e) {
       LOGGER.error("Could not send to url", e);
       return false;
@@ -150,7 +150,7 @@ public class IndexingService {
     String accessUrl = String.format("%s/%s/%s/{id}", baseUrl, index, type);
     ResponseEntity<String> entity = restTemplate.getForEntity(accessUrl,
             String.class,
-            urlEncode(document_id));
+            document_id);
     LOGGER.trace("Status code value: " + entity.getStatusCodeValue());
     LOGGER.trace("HTTP Header 'ContentType': " + entity.getHeaders().getContentType());
     return entity;
