@@ -122,8 +122,8 @@ public class MetastoreMessageHandler implements IMessageHandler {
         return RESULT.FAILED;
       }
       resultPath = pathWithAllMappings.get(0);
-      // As a quick and dirty first solution all in one index.
-      String index = schemaId;
+      // Prefix index with configured value. (default: metastore-
+      String index = properties.getElasticsearchIndex() + schemaId;
 //      String index = ElasticsearchUtil.testForValidIndex(mappingId);
 //      if (!index.equals(mappingId)) {
 //        LOG.warn("MappingId '{}' was transformed to '{}' due to restrictions of elasticsearch!", mappingId, index);

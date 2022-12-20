@@ -65,7 +65,7 @@ public class ApplicationProperties extends GenericApplicationProperties {
    * The elastic index ("database") where the records will be stored into.
    */
   @edu.kit.datamanager.annotations.ElasticsearchIndex
-  @Value("${metastore.indexer.elastic.index:kitdm}")
+  @Value("${metastore.indexer.elastic.index:metastore-}")
   String elasticsearchIndex;
 
   /**
