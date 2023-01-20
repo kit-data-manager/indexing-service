@@ -71,28 +71,28 @@ public class IndexingServiceTest {
     } catch (IndexerException ie) {
       assertTrue(true);
     }
-    ap.setElasticsearchUrl(new URL("http://localhost:9201"));
+    ap.setElasticsearchUrl(new URL("http://localhost:41201"));
     try {
       new IndexingService(ap);
       assertTrue(false);
     } catch (IndexerException ie) {
       assertTrue(true);
     }
-    ap.setElasticsearchUrl(new URL("http://localhost:9200/"));
+    ap.setElasticsearchUrl(new URL("http://localhost:41200/"));
     try {
       new IndexingService(ap);
       assertTrue(false);
     } catch (IndexerException ie) {
       assertTrue(true);
     }
-    ap.setElasticsearchUrl(new URL("http://localhost:9200/"));
+    ap.setElasticsearchUrl(new URL("http://localhost:41200/"));
     try {
       new IndexingService(ap);
       assertTrue(false);
     } catch (IndexerException ie) {
       assertTrue(true);
     }
-    ap.setElasticsearchUrl(new URL("http://localhost:9200/kitdm"));
+    ap.setElasticsearchUrl(new URL("http://localhost:41200/kitdm"));
     try {
       new IndexingService(ap);
       assertTrue(false);
@@ -100,7 +100,7 @@ public class IndexingServiceTest {
       assertTrue(true);
     }
     // Test with correct values
-    ap.setElasticsearchUrl(new URL("http://localhost:9200"));
+    ap.setElasticsearchUrl(new URL("http://localhost:41200"));
     try {
       assertNotNull(new IndexingService(ap));
       assertTrue(true);
@@ -119,7 +119,7 @@ public class IndexingServiceTest {
     String index = "junittest";
     String documentId = "idwithoutspaces";
     ApplicationProperties ap = new ApplicationProperties();
-    ap.setElasticsearchUrl(new URL("http://localhost:9200"));
+    ap.setElasticsearchUrl(new URL("http://localhost:41200"));
     IndexingService is = new IndexingService(ap);
     is.uploadToElastic(jsonDocument, index, documentId);
     ResponseEntity<String> fromElastic = is.getFromElastic(index, documentId);
@@ -135,7 +135,7 @@ public class IndexingServiceTest {
     String index = "junittest";
     String documentId = "id with spaces";
     ApplicationProperties ap = new ApplicationProperties();
-    ap.setElasticsearchUrl(new URL("http://localhost:9200"));
+    ap.setElasticsearchUrl(new URL("http://localhost:41200"));
     IndexingService is = new IndexingService(ap);
     is.uploadToElastic(jsonDocument, index, documentId);
     ResponseEntity<String> fromElastic = is.getFromElastic(index, documentId);

@@ -21,7 +21,6 @@ import edu.kit.datamanager.indexer.domain.MappingRecord;
 import edu.kit.datamanager.indexer.exception.IndexerException;
 import edu.kit.datamanager.indexer.mapping.Mapping;
 import static edu.kit.datamanager.indexer.mapping.Mapping.GEMMA;
-import edu.kit.datamanager.util.AuthenticationHelper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -43,15 +42,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
@@ -59,9 +54,6 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 /**
  */
 @RunWith(SpringRunner.class)
-@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-@PowerMockIgnore({"javax.crypto.*", "javax.management.*"})
-@PrepareForTest(AuthenticationHelper.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestExecutionListeners(listeners = {
@@ -513,12 +505,17 @@ public class MappingServiceTest {
     mappingRepo.save(mappingRecord);
     File srcFile = new File("src/test/resources/examples/gemma/simple.json");
     URI contentUrl = srcFile.toURI();
-    String expectedResult = FileUtils.readFileToString(new File("src/test/resources/result/gemma/simple.elastic.json"), StandardCharsets.UTF_8);
+    String expectedResult = FileUtils.readFileToString(new File("src/test/resources/result/gemma/extended.simple.elastic.json"), StandardCharsets.UTF_8);
     List<Path> resultPath = mappingService4Test.executeMapping(contentUrl, mappingId);
     assertTrue("Result available", !resultPath.isEmpty());
     assertEquals("No of result files: ", 1, resultPath.size());
     assertTrue(resultPath.get(0).toFile().exists());
     String result = FileUtils.readFileToString(resultPath.get(0).toFile(), StandardCharsets.UTF_8);
+    System.out.println("------------------------------------------------");
+    System.out.println(expectedResult);
+    System.out.println("------------------------------------------------");
+    System.out.println(result);
+    System.out.println("------------------------------------------------");
     assertEquals("Expected result: ", expectedResult, result);
     assertTrue(resultPath.get(0).toFile().delete());
   }

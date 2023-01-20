@@ -165,6 +165,7 @@ public class MappingService {
       Path srcFile = download.get();
       // Get mapping file
       Optional<MappingRecord> optionalMappingRecord = mappingRepo.findByMappingIdAndMappingType(mappingId, mappingType);
+      LOGGER.trace("Mapping Record available: '{}'", optionalMappingRecord.isPresent());
       if (optionalMappingRecord.isPresent()) {
         mappingRecord = optionalMappingRecord.get();
         mappingRecord.getMappingDocumentUri();
@@ -198,8 +199,10 @@ public class MappingService {
     Iterator<MappingRecord> findMapping = mappingRepo.findByMappingIdInOrMappingTypeIn(Arrays.asList(mappingId), Arrays.asList(noMappingType)).iterator();
     String mappingType = null;
     if (findMapping.hasNext()) {
+      // If there are several mappings right now only the first mapping is selected. 
       mappingType = findMapping.next().getMappingType();
     }
+    LOGGER.trace("Found mappingType: '{}'", mappingType);
     Optional<Path> executeMapping = executeMapping(contentUrl, mappingId, mappingType);
     if (executeMapping.isPresent()) {
       returnValue.add(executeMapping.get());
