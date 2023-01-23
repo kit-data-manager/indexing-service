@@ -19,6 +19,21 @@ test {
    environment "spring.config.location", "classpath:/config/"
 }
 
+// Generate coverage report
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = false
+    }
+    afterEvaluate {
+        //exclude some classes/package from code coverage report
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it)
+            }))
+    }
+}
+
 tasks.withType(Test) {
     testLogging {
         events 'started', 'passed'

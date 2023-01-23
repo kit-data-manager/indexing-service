@@ -35,13 +35,13 @@ configurations {
     }
 }
 
-if (project.hasProperty('travis')) {
-    println 'Using travis profile for building ' + project.getName()
-    apply from: 'gradle/profile-travis.gradle'
-} else if (project.hasProperty('release')) {
-    println 'Using release profile for building ' + project.getName()
-    apply from: 'gradle/profile-release.gradle'   
-} 
+if (System.getProperty('profile') == 'minimal') {
+    println 'Using minimal profile for building ' + project.getName()
+    apply from: 'gradle/profile-minimal.gradle'   
+} else {
+    println 'Using default profile executing all tests for building ' + project.getName()
+    apply from: 'gradle/profile-complete.gradle'
+}
 
 dependencies {
     // Spring
