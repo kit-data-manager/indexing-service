@@ -149,7 +149,7 @@ cd "$INSTALLATION_DIRECTORY" || { echo "Failure changing to directory $INSTALLAT
  1; }
 
 # Determine name of jar file.
-jarFile=($(ls $REPO_NAME*.jar))
+jarFile=($(ls "$REPO_NAME"*.jar)[])
 
 {
   echo "#!/bin/bash"                                                                             
