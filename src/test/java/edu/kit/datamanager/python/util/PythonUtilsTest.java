@@ -40,17 +40,23 @@ public class PythonUtilsTest {
     // Determine python location
     OutputStream os = new ByteArrayOutputStream();
     PythonUtils.run("which","python3", os, null);
-    String pythonExecutable = os.toString();
+    String pythonExecutable = os.toString().trim();
     os.flush();
-    if (pythonExecutable.trim().isEmpty()) {
+    if (pythonExecutable.isEmpty()) {
     PythonUtils.run("which","python", os, null);
-     pythonExecutable = os.toString();
+     pythonExecutable = os.toString().trim();
     }
-    if (pythonExecutable.trim().isEmpty()) { 
+    if (pythonExecutable.isEmpty()) { 
       throw new IOException("Python seems not to be available!");
     }
+    // Check version
+    PythonUtils.run(pythonExecutable,"--version", os, null);
+    String version = os.toString();
+    os.flush();
+    
     System.out.println("Location of python: " + pythonExecutable);
-    PYTHON_EXECUTABLE = pythonExecutable.trim();
+    System.out.println("Version of python: " + version);
+    PYTHON_EXECUTABLE = pythonExecutable;
   }
   
   @AfterClass
