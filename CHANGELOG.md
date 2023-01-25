@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+
+## [0.1.0] - date 2022-01-25
+### Added
 - Switch to gitHub Actions for CI
 ### Changed
 - Update to gradle version 7.6
@@ -40,7 +46,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.0.4...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.0.4...v0.1.0
 [0.0.4]: https://github.com/kit-data-manager/indexing-service/compare/v0.0.3...v0.0.4
 [0.0.3]: https://github.com/kit-data-manager/indexing-service/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/kit-data-manager/metastore2/indexing-service/tag/v0.0.2
