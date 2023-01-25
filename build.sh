@@ -64,9 +64,10 @@ function checkParameters {
      exit 1
   fi
   # Convert variable of installation directory to an absolute path
-    cd "$INSTALLATION_DIRECTORY"
-    INSTALLATION_DIRECTORY=`pwd`
-    cd "$ACTUAL_DIR"
+  cd "$INSTALLATION_DIRECTORY" || { echo "Failure changing to directory $INSTALLATION_DIRECTORY"; ex
+it 1; }
+  INSTALLATION_DIRECTORY=$(pwd)
+  cd "$ACTUAL_DIR" || { echo "Failure changing to directory $ACTUAL_DIR"; exit 1; }
 }
 
 ################################################################################
@@ -84,7 +85,7 @@ echo "--------------------------------------------------------------------------
 ################################################################################
 # Test for commands used in this script
 ################################################################################
-testForCommands="chmod cp dirname find java javac mkdir"
+testForCommands="chmod cp dirname find java javac mkdir sed"
 
 for command in $testForCommands
 do 
@@ -103,12 +104,12 @@ ACTUAL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ################################################################################
 # Check parameters
 ################################################################################
-checkParameters $*
+checkParameters "$*"
 
 ################################################################################
 # Determine repo name 
 ################################################################################
-REPO_NAME=`./gradlew -q printProjectName`
+REPO_NAME=$(./gradlew -q printProjectName)
 # Use only last line
 REPO_NAME=${REPO_NAME##*$'\n'}
 
@@ -124,7 +125,7 @@ echo Build service...
 
 
 echo "Copy configuration to '$INSTALLATION_DIRECTORY'..."
-find . -name application-default.properties -exec cp '{}' "$INSTALLATION_DIRECTORY"/application.properties \;
+find . -name application-default.properties -exec sed -e "s/src\/test\/resources\/python/scripts\/python/g" '{}' > "$INSTALLATION_DIRECTORY"/application.properties \;
 
 echo "Copy jar file to '$INSTALLATION_DIRECTORY'..."
 find . -name "$REPO_NAME*.jar" -exec cp '{}' "$INSTALLATION_DIRECTORY" \;
@@ -135,43 +136,51 @@ mkdir "$INSTALLATION_DIRECTORY"/config
 echo "Create lib directory"
 mkdir "$INSTALLATION_DIRECTORY"/lib
 
+echo "Copy python scripts..."
+mkdir -p "$INSTALLATION_DIRECTORY"/scripts/python
+cp src/test/resources/python/*.py "$INSTALLATION_DIRECTORY"/scripts/python
+
 ###############################################################################
 # Create run script
 ################################################################################
 printInfo "Create run script ..."
 
-cd "$INSTALLATION_DIRECTORY"
+cd "$INSTALLATION_DIRECTORY" || { echo "Failure changing to directory $INSTALLATION_DIRECTORY"; exit
+ 1; }
 
 # Determine name of jar file.
-jarFile=(`ls $REPO_NAME*.jar`)
+jarFile=($(ls "$REPO_NAME"*.jar)[])
 
-echo "#!/bin/bash"                                                                              >  run.sh
-echo "################################################################################"         >> run.sh
-echo "# Run microservice '$REPO_NAME'"                                                          >> run.sh
-echo "# /"                                                                                      >> run.sh
-echo "# |- application.properties    - Default configuration for microservice"                  >> run.sh
-echo "# |- '$REPO_NAME'*.jar"        - Microservice                                             >> run.sh
-echo "# |- run.sh                    - Start script    "                                        >> run.sh
-echo "# |- lib/                      - Directory for plugins (if supported)"                    >> run.sh
-echo "# |- config/ "                                                                            >> run.sh
-echo "#    |- application.properties - Overwrites default configuration (optional)"             >> run.sh
-echo "################################################################################"         >> run.sh
-echo " "                                                                                        >> run.sh
-echo "################################################################################"         >> run.sh
-echo "# Define jar file"                                                                        >> run.sh
-echo "################################################################################"         >> run.sh
-echo jarFile=$jarFile                                                                           >> run.sh
-echo " "                                                                                        >> run.sh
-echo "################################################################################"         >> run.sh
-echo "# Determine directory of script."                                                         >> run.sh
-echo "################################################################################"         >> run.sh
-echo 'ACTUAL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"'           >> run.sh
-echo 'cd "$ACTUAL_DIR"'                                                                         >> run.sh
-echo " "                                                                                        >> run.sh
-echo "################################################################################"         >> run.sh
-echo "# Start micro service"                                                                    >> run.sh
-echo "################################################################################"         >> run.sh
-echo 'java -cp ".:$jarFile" -Dloader.path="file://$ACTUAL_DIR/$jarFile,./lib/,." -jar $jarFile' >> run.sh
+{
+  echo "#!/bin/bash"                                                                             
+  echo "################################################################################"        
+  echo "# Run microservice '$REPO_NAME'"                                                         
+  echo "# /"                                                                                     
+  echo "# |- application.properties    - Default configuration for microservice"                 
+  echo "# |- '$REPO_NAME'*.jar         - Microservice"
+  echo "# |- run.sh                    - Start script"                                       
+  echo "# |- lib/                      - Directory for plugins (if supported)"                   
+  echo "# |- config/"                                                                           
+  echo "#    |- application.properties - Overwrites default configuration (optional)"            
+  echo "################################################################################"        
+  echo " "                                                                                       
+  echo "################################################################################"        
+  echo "# Define jar file"                                                                       
+  echo "################################################################################"        
+  echo "jarFile=${jarFile[0]}"
+  echo " "                                                                                       
+  echo "################################################################################"        
+  echo "# Determine directory of script."                                                        
+  echo "################################################################################"        
+  echo "ACTUAL_DIR=\"\$( cd \"\$( dirname \"\${BASH_SOURCE[0]}\" )\" >/dev/null 2>&1 && pwd )\""
+  echo "cd \"\$ACTUAL_DIR\""                                                                       
+  echo " "                                                                                       
+  echo "################################################################################"        
+  echo "# Start micro service"                                                                   
+  echo "################################################################################"        
+  echo "java -cp \".:\$jarFile\" -Dloader.path=\"file://\$ACTUAL_DIR/\$jarFile,./lib/,.\" -jar \$jar
+File"
+} > run.sh
 
 # make script executable
 chmod 755 run.sh

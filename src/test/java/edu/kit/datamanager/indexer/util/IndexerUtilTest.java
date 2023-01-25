@@ -37,6 +37,8 @@ import static org.junit.Assert.*;
  * @author hartmann-v
  */
 public class IndexerUtilTest {
+  
+  TokenUtil tokenUtil = new TokenUtil(null);
 
   public IndexerUtilTest() {
   }
