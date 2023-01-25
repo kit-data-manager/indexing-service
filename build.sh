@@ -149,7 +149,7 @@ cd "$INSTALLATION_DIRECTORY" || { echo "Failure changing to directory $INSTALLAT
  1; }
 
 # Determine name of jar file.
-jarFile=($(ls "$REPO_NAME"*.jar)[])
+jarFile=($(ls "$REPO_NAME"*.jar))
 
 {
   echo "#!/bin/bash"                                                                             
@@ -178,8 +178,7 @@ jarFile=($(ls "$REPO_NAME"*.jar)[])
   echo "################################################################################"        
   echo "# Start micro service"                                                                   
   echo "################################################################################"        
-  echo "java -cp \".:\$jarFile\" -Dloader.path=\"file://\$ACTUAL_DIR/\$jarFile,./lib/,.\" -jar \$jar
-File"
+  echo "java -cp \".:\$jarFile\" -Dloader.path=\"file://\$ACTUAL_DIR/\$jarFile,./lib/,.\" -jar \$jarFile"
 } > run.sh
 
 # make script executable
