@@ -8,19 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Switch to gitHub Actions for CI
 ### Changed
-- Update to gradle version 7.5.1
+- Update to gradle version 7.6
 - Support for Java 17 (build/tests)
-- Update to spring-boot 2.7.4
-- Update to spring-doc 1.6.11
-- Update to javers 6.6.5
+- Update to spring-boot 2.7.8
+- Update to spring-doc 1.6.14
+- Update to javers 6.8.2
 - Update to postgresql 42.5.1
 - Update to h2 2.1.214
-- Update to io.freefair.lombok 6.5.1
+- Update to io.freefair.lombok 6.6.1
 - Remove dependencies of powermock for tests
-- Update to org.owasp.dependencycheck 7.3.0
+- Update to org.owasp.dependencycheck 8.0.1
 - Update to spring-messaging 5.3.24
 - Update to spring-cloud 3.1.4
-- Update to service-base 1.0.7
+- Update to service-base 1.1.0
+- Update to generic-message-consumer 1.0.0
 
 ## [0.0.4] - date 2020-12-16
 ### Fixed

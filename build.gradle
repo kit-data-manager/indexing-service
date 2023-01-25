@@ -1,13 +1,19 @@
 plugins { 
-    id "org.springframework.boot" version "${springBootVersion}"
+    id "org.springframework.boot" version "2.7.8"
     id "io.spring.dependency-management" version "1.1.0"
-    id "io.freefair.lombok" version "6.5.1"
-    id "io.freefair.maven-publish-java" version "6.5.1"
-    id "org.owasp.dependencycheck" version "7.3.0"
+    id "io.freefair.lombok" version "6.6.1"
+    id "io.freefair.maven-publish-java" version "6.6.1"
+    id "org.owasp.dependencycheck" version "8.0.1"
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'net.researchgate.release' version '3.0.2'
     id 'java'
     id 'jacoco'
+}
+
+ext {
+  // versions of dependencies
+  javersVersion     = 6.8.2
+  springDocVersion  = 1.6.14
 }
 
 description = 'Generic indexing service supporting different mapping implementations.'
@@ -35,17 +41,17 @@ configurations {
     }
 }
 
-if (project.hasProperty('travis')) {
-    println 'Using travis profile for building ' + project.getName()
-    apply from: 'gradle/profile-travis.gradle'
-} else if (project.hasProperty('release')) {
-    println 'Using release profile for building ' + project.getName()
-    apply from: 'gradle/profile-release.gradle'   
-} 
+if (System.getProperty('profile') == 'minimal') {
+    println 'Using minimal profile for building ' + project.getName()
+    apply from: 'gradle/profile-minimal.gradle'   
+} else {
+    println 'Using default profile executing all tests for building ' + project.getName()
+    apply from: 'gradle/profile-complete.gradle'
+}
 
 dependencies {
     // Spring
-    implementation 'org.springframework:spring-messaging:5.3.24'
+    implementation 'org.springframework:spring-messaging:5.3.25'
     implementation 'org.springframework.cloud:spring-cloud-gateway-mvc:3.1.4'
 
     // Spring Boot
@@ -75,16 +81,16 @@ dependencies {
     implementation "org.apache.tika:tika-core:2.6.0"
     implementation "commons-codec:commons-codec:1.15"
   
-    implementation "com.github.jknack:handlebars:4.2.0"
-    implementation "org.json:json:20200518"
+    implementation "com.github.jknack:handlebars:4.3.1"
+    implementation "org.json:json:20220924"
   
     // javers
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
     implementation "org.javers:javers-core:${javersVersion}"
 
     // datamanager
-    implementation("edu.kit.datamanager:generic-message-consumer:0.2.1-SNAPSHOT")
-    implementation "edu.kit.datamanager:service-base:1.0.7"
+    implementation("edu.kit.datamanager:generic-message-consumer:1.0.0")
+    implementation "edu.kit.datamanager:service-base:1.1.0"
 
     runtimeOnly    'org.apache.httpcomponents:httpclient:4.5.6'
 
