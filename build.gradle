@@ -68,7 +68,7 @@ dependencies {
 
     //security
     implementation "org.springframework.security:spring-security-web:5.7.5"
-    implementation "org.springframework.security:spring-security-config:5.7.5"
+    implementation "org.springframework.security:spring-security-config:6.0.1"
     
  
     // springdoc
