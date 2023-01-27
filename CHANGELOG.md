@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 
-## [0.1.0] - date 2022-01-25
+## [0.1.0] - date 2022-01-27
 ### Added
 - Switch to gitHub Actions for CI
+- Add /actuator/info endpoint
+
 ### Changed
 - Update to gradle version 7.6
 - Support for Java 17 (build/tests)
