@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/product.schema.json",
+  "title": "MetadataRecord Mapping ",
+  "description": "MetadataRecord mapping from json",
+  "type": "object",
+  "properties":{
+  "id":{
+   "path": "id",
+   "type": "string"
+   },
+  "version":{
+   "path": "recordVersion",
+   "type": "int"
+   },
+  "creationDate":{
+   "path": "createdAt",
+   "type": "date"
+   },
+  "updateDate":{
+   "path": "lastUpdate",
+   "type": "date"
+   },
+   "schema":{
+   "path": "schema.identifier",
+   "type": "string"
+   },
+  "schemaVersion":{
+   "path": "schemaVersion",
+   "type": "int"
+   },
+   "acl":{
+   "path": "acl.#.sid",
+   "type": "text"
+   }
+  }
+}

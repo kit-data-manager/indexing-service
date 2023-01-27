@@ -18,20 +18,21 @@ A standalone service which receives messages about changes in metadata documents
 Dependencies that are needed to build and are not being downloaded via gradle:
 
 - OpenJDK 11
-
-`./gradlew -Pclean-release build`
-
+```
+$ bash build.sh PATH/TO/INSTALLATION/DIR
+```
 ## How to start
-
-> TODO This section is a placeholder. It still needs to be written properly.
+```
+$ PATH/TO/INSTALLATION/DIR/run.sh
+```
 
 ### Prerequisites
 
 You might want to take a look at testbed4inf, which should make it easy to satisfy those.
 
 - Gemma?
-- a RabbitMQ instance
-- an elasticsearch instance
+- a running RabbitMQ instance 
+- a running elasticsearch instance
 
 ### Setup using Docker
 #### Install Gemma

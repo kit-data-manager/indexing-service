@@ -5,28 +5,32 @@ name: build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, main, development ]
 
+env:
+    # JDK version used for building jar file
+    currentBuildVersion: 11
 jobs:
-  build-jdk:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        # Use both LTS releases and latest one
-        jdk: [ 8, 13 ]
+#        operating-system: [ubuntu-latest, macOS-latest, windows-latest]
+        operating-system: [ubuntu-latest, macOS-latest]
+         # Use both LTS releases and latest one for tests
+        jdk: [ 11, 17 ]
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-    - name: Set up OpenJDK
-      uses: actions/setup-java@v1
+    - name: Set up OpenJDK version ...
+      uses: actions/setup-java@v2
       with:
+        distribution: 'zulu' 
         java-version: ${{ matrix.jdk }}
     - name: Pull elasticsearch image from docker
       run: docker pull elasticsearch:7.9.3
-    - name: Create and run elasticsearch container
-      run: docker run -d --name elasticsearch4metastore  -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3
     - name: Install python
       run: sudo apt-get install --assume-yes python3 python3-setuptools python3-pip 
     - name: Update pip
@@ -36,9 +40,43 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew -Ptravis clean check jacocoTestReport
+      run:   |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+              ./gradlew clean build 
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+              ./gradlew clean build 
+        elif [ "$RUNNER_OS" == "Windows" ]; then
+              ./gradlew.bat clean build
+        else
+              echo "$RUNNER_OS not supported"
+              exit 1
+        fi
+      shell: bash
+  coverage:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Set up OpenJDK version ...
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'zulu' 
+        java-version: ${{ env.currentBuildVersion }}
+    - name: Pull elasticsearch image from docker
+      run: docker pull elasticsearch:7.9.3
+    - name: Install python
+      run: sudo apt-get install --assume-yes python3 python3-setuptools python3-pip 
+    - name: Update pip
+      run: pip3 install --upgrade pip
+    - name: Install libraries via pip (xmltodict and wget)
+      run: pip3 install xmltodict wget
+    - name: Grant execute permission for gradlew
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle (JDK ${{ env.currentBuildVersion }})
+      run: ./gradlew clean check jacocoTestReport
     - name: Codecov
       uses: codecov/codecov-action@v1
       with:
         files: ./build/reports/jacoco/test/jacocoTestReport.xml #optional
-      

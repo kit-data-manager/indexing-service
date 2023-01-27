@@ -60,6 +60,7 @@ public class MappingUtil {
   public Optional<Path> mapFile(Path mappingFile, Path srcFile, String mapping) {
     Path resultFile;
     int returnCode = FAILURE;
+    LOGGER.trace("mapFile({},{},{})", mappingFile, srcFile, mapping);
     resultFile = IndexerUtil.createTempFile(mapping + "_", ".mapping");
     try {
       returnCode = mapFile(mappingFile, srcFile, resultFile, mapping);

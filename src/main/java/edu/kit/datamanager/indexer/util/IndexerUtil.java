@@ -16,16 +16,18 @@
 package edu.kit.datamanager.indexer.util;
 
 import edu.kit.datamanager.clients.SimpleServiceClient;
+import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.indexer.exception.IndexerException;
+import edu.kit.datamanager.util.JwtBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
@@ -64,17 +66,42 @@ public class IndexerUtil {
    * @return the path to the created file.
    */
   public static Optional<Path> downloadResource(URI resourceURL) {
+    return downloadResource(resourceURL, null);
+  }
+  public static void main(String[] args) throws URISyntaxException {
+    String content = "leer";
+    URI resourceURL = new URI("http://localhost:8040/api/v1/metadata/46e23f6c-fd41-45b3-adf1-d245faa5bf4d?version=2");
+         if (resourceURL.getHost() != null) {
+          SimpleServiceClient ssc = SimpleServiceClient.create(resourceURL.toString());
+          content = ssc.getResource(String.class);
+        }  
+         System.out.println(content);
+  }
+
+  /**
+   * Downloads or copy the file behind the given URI and returns its path on
+   * local disc. You should delete or move to another location afterwards.
+   *
+   * @param resourceURL the given URI
+   * @param tokenHandler Holding information for creating tokens for authorization.
+   * @return the path to the created file.
+   */
+  public static Optional<Path> downloadResource(URI resourceURL, TokenUtil tokenHandler) {
     String content = null;
     Path downloadedFile = null;
     try {
       if (resourceURL != null) {
+        Thread.sleep(1);
         String suffix = FilenameUtils.getExtension(resourceURL.getPath());
         suffix = suffix.trim().isEmpty() ? DEFAULT_SUFFIX : "." + suffix;
+        String compactToken = tokenHandler == null ? null : tokenHandler.getCompactToken(30);
         if (resourceURL.getHost() != null) {
-          content = SimpleServiceClient
-                  .create(resourceURL.toString())
-                  .accept(MediaType.TEXT_PLAIN)
-                  .getResource(String.class);
+          SimpleServiceClient ssc = SimpleServiceClient.create(resourceURL.toString());
+          ssc.accept(MediaType.TEXT_PLAIN);
+          if (compactToken != null) {
+            ssc.withBearerToken(compactToken);
+          }
+          content = ssc.getResource(String.class);
           downloadedFile = createTempFile("download", suffix);
           FileUtils.writeStringToFile(downloadedFile.toFile(), content, StandardCharsets.UTF_8);
         } else {

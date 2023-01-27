@@ -1,104 +1,128 @@
-buildscript {
-    repositories { 
-        mavenLocal()
-        jcenter()
-        mavenCentral()
-
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE")
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
-        //classpath 'org.kordamp.gradle:stats-gradle-plugin:0.2.2'
-    }
+plugins { 
+    id "org.springframework.boot" version "2.7.8"
+    id "io.spring.dependency-management" version "1.1.0" 
+    id "io.freefair.lombok" version "6.6.1"
+    id "io.freefair.maven-publish-java" version "6.6.1"
+    id "org.owasp.dependencycheck" version "8.0.1"
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'net.researchgate.release' version '3.0.2'
+    id "com.gorylenko.gradle-git-properties" version "2.4.1"
+    id 'java'
+    id 'jacoco'
 }
 
-plugins {
-    id 'io.franzbecker.gradle-lombok' version '1.14'
-    id "io.spring.dependency-management" version "1.0.8.RELEASE" 
-    id "com.github.kt3k.coveralls" version "2.8.1" 
-    id "org.owasp.dependencycheck" version "3.1.2"
-    id "org.asciidoctor.convert" version "1.5.3"
-    id 'net.researchgate.release' version '2.8.1'
+ext {
+  // versions of dependencies
+  javersVersion     = '6.8.2'
+  springDocVersion  = '1.6.14'
 }
-
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 description = 'Generic indexing service supporting different mapping implementations.'
 group = 'edu.kit.datamanager'
 
+println "Running gradle version: $gradle.gradleVersion"
 println "Building ${name} version: ${version}"
-
+println "JDK version: ${JavaVersion.current()}"
 
 repositories {
-    mavenLocal()
+    mavenLocal() 
     jcenter()
     mavenCentral()
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
  
 configurations {
-    all*.exclude module : 'spring-boot-starter-logging'
+    asciidoctorExt
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
-lombok {
-    version = '1.18.10'
-    sha256 = ""
+if (System.getProperty('profile') == 'minimal') {
+    println 'Using minimal profile for building ' + project.getName()
+    apply from: 'gradle/profile-minimal.gradle'   
+} else {
+    println 'Using default profile executing all tests for building ' + project.getName()
+    apply from: 'gradle/profile-complete.gradle'
 }
-
-if (project.hasProperty('travis')) {
-    println 'Using travis profile for building ' + project.getName()
-    apply from: 'gradle/profile-travis.gradle'
-} else if (project.hasProperty('release')) {
-    println 'Using release profile for building ' + project.getName()
-    apply from: 'gradle/profile-release.gradle'   
-} 
 
 dependencies {
-    implementation "org.javers:javers-spring-boot-starter-sql:3.9.0"
+    // Spring
+    implementation 'org.springframework:spring-messaging:5.3.25'
+    implementation 'org.springframework.cloud:spring-cloud-gateway-mvc:3.1.4'
+
+    // Spring Boot
+    // boot starter
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-starter-data-rest"
     implementation "org.springframework.boot:spring-boot-starter-mail"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-validation"    
+    implementation "org.springframework.boot:spring-boot-starter-web"
    
-    implementation "org.springdoc:springdoc-openapi-ui:1.4.8"
-    implementation "org.springdoc:springdoc-openapi-data-rest:1.4.8"
+
+    //security
+    implementation "org.springframework.security:spring-security-web:5.7.5"
+    implementation "org.springframework.security:spring-security-config:5.7.5"
+    
+ 
+    // springdoc
+    implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
+    implementation "org.springdoc:springdoc-openapi-data-rest:${springDocVersion}"
+    implementation "org.springdoc:springdoc-openapi-webmvc-core:${springDocVersion}"
 
     // driver for postgres
-    implementation "org.postgresql:postgresql:42.2.1"
+    implementation "org.postgresql:postgresql:42.5.1"
     //driver for h2
-    implementation "com.h2database:h2:1.4.200"
+    implementation "com.h2database:h2:2.1.214"
     
-    
-    implementation "org.apache.tika:tika-core:1.18"
-    implementation "org.javers:javers-core:5.3.2"
-
-    implementation("com.github.jknack:handlebars:4.2.0")
-    implementation("org.json:json:20200518")
+    //apache
+    implementation "org.apache.tika:tika-core:2.6.0"
+    implementation "commons-codec:commons-codec:1.15"
   
+    implementation "com.github.jknack:handlebars:4.3.1"
+    implementation "org.json:json:20220924"
+  
+    // javers
+    implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
+    implementation "org.javers:javers-core:${javersVersion}"
+
     // datamanager
-    implementation("edu.kit.datamanager:generic-message-consumer:0.2.0")
-    implementation "edu.kit.datamanager:service-base:0.2.0"
+    implementation("edu.kit.datamanager:generic-message-consumer:1.0.0")
+    implementation "edu.kit.datamanager:service-base:1.1.0"
+
+    // actuator
+    implementation 'de.codecentric:spring-boot-admin-starter-client:2.7.10'
 
     runtimeOnly    'org.apache.httpcomponents:httpclient:4.5.6'
 
-    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
+    // Additional libraries for tests
+    testImplementation "com.google.guava:guava:31.1-jre"
+    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework:spring-test"
     testImplementation "org.springframework.security:spring-security-test"
    
     //Java 11 Support 
-    testImplementation "org.mockito:mockito-core:2.18.0"
-    testImplementation "org.powermock:powermock-module-junit4:2.0.0-beta.5"
-    testImplementation "org.powermock:powermock-api-mockito2:2.0.0-beta.5"
-    testImplementation "junit:junit:4.13.1"
+    testImplementation "org.mockito:mockito-core:4.8.1"
+    testImplementation "junit:junit:4.13.2"
 
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.2.RELEASE'
-    testImplementation 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
-    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.2.RELEASE'
-    asciidoctor 'com.github.allati.asciidoctor.monotree:asciidoctor-extension-monotree:0.0.1'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.7.RELEASE'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.7.RELEASE'
+}
+
+jar {
+    // disable plain jar file
+    enabled = false
+}
+
+springBoot {    
+    buildInfo()
 }
 
 bootJar {
@@ -112,8 +136,31 @@ bootJar {
     launchScript()
 }
 
+task prepareElastic(type:Exec) {
+  println 'Start elasticsearch container'
+  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+    println '##################################################################'
+    println 'ATTENTION: Please start elasticsearch by your own!'
+    println '##################################################################'
+  } else {
+    commandLine "bash", "./manageIndexingFramework.sh", "test"
+  }
+}
+
+task stopElastic(type:Exec) {
+  println 'Stop elasticsearch container'
+  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+    println '##################################################################'
+    println 'ATTENTION: Please stop elasticsearch by your own!'
+    println '##################################################################'
+  } else {
+    commandLine "bash", "./manageIndexingFramework.sh", "stop_test"
+  }
+}
+
 test {
-    finalizedBy jacocoTestReport
+    dependsOn prepareElastic
+    finalizedBy stopElastic, jacocoTestReport
     environment "spring.config.location", "classpath:/test-config/"
 
     testLogging {
@@ -123,7 +170,7 @@ test {
 }
 
 jacoco {
-    toolVersion = "0.8.5"
+    toolVersion = "0.8.8"
 }
 
 // task for printing project name.

@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.indexer.configuration;
 
-import edu.kit.datamanager.configuration.GenericPluginProperties;
+import edu.kit.datamanager.configuration.GenericApplicationProperties;
 import java.net.URL;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +31,7 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @Validated
 @EqualsAndHashCode(callSuper = true)
-public class ApplicationProperties extends GenericPluginProperties {
+public class ApplicationProperties extends GenericApplicationProperties {
 
   /**
    * The absolute path to the python interpreter.
@@ -65,7 +65,7 @@ public class ApplicationProperties extends GenericPluginProperties {
    * The elastic index ("database") where the records will be stored into.
    */
   @edu.kit.datamanager.annotations.ElasticsearchIndex
-  @Value("${metastore.indexer.elastic.index:kitdm}")
+  @Value("${metastore.indexer.elastic.index:metastore-}")
   String elasticsearchIndex;
 
   /**

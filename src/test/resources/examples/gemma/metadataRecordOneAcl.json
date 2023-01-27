@@ -1,0 +1,24 @@
+{
+  "id": "6cead685-c861-40a7-8c75-ef5d1aa0724e",
+  "relatedResource": {
+    "identifier": "anyResourceId3",
+    "identifierType": "INTERNAL"
+  },
+  "createdAt": "2022-11-21T09:19:35Z",
+  "lastUpdate": "2022-11-21T09:19:35.293Z",
+  "schema": {
+    "identifier": "http://localhost:8040/api/v1/schemas/my_first_xsd?version=2",
+    "identifierType": "URL"
+  },
+  "schemaVersion": 2,
+  "recordVersion": 1,
+  "acl": [
+    {
+      "id": 2,
+      "sid": "SELF",
+      "permission": "ADMINISTRATE"
+    }
+  ],
+  "metadataDocumentUri": "http://localhost:8040/api/v1/metadata/6cead685-c861-40a7-8c75-ef5d1aa0724e?version=1",
+  "documentHash": "sha1:d2f6c282f4ad08b8f9d1a18934378f6f4f1fe210"
+}

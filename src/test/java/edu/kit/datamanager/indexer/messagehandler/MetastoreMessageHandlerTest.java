@@ -23,7 +23,6 @@ import edu.kit.datamanager.indexer.domain.MappingRecord;
 import edu.kit.datamanager.indexer.service.impl.IndexingService;
 import edu.kit.datamanager.indexer.service.impl.MappingService;
 import edu.kit.datamanager.messaging.client.handler.IMessageHandler.RESULT;
-import edu.kit.datamanager.util.AuthenticationHelper;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,15 +33,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
@@ -50,9 +45,6 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 /**
  */
 @RunWith(SpringRunner.class)
-@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-@PowerMockIgnore({"javax.crypto.*", "javax.management.*"})
-@PrepareForTest(AuthenticationHelper.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestExecutionListeners(listeners = {

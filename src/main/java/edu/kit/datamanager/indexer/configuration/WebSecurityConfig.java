@@ -15,12 +15,15 @@
  */
 package edu.kit.datamanager.indexer.configuration;
 
-import edu.kit.datamanager.security.filter.JwtAuthenticationFilter;
-import edu.kit.datamanager.security.filter.JwtAuthenticationProvider;
+import edu.kit.datamanager.security.filter.KeycloakTokenFilter;
 import edu.kit.datamanager.security.filter.NoAuthenticationFilter;
-import edu.kit.datamanager.security.filter.NoopAuthenticationEventPublisher;
+import java.util.Optional;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +35,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -46,33 +50,45 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+  private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
   @Autowired
-  private Logger logger;
+  private ApplicationProperties applicationProperties;
 
-  public WebSecurityConfig(){
+  @Autowired
+  private Optional<KeycloakTokenFilter> keycloaktokenFilterBean;
+
+  public WebSecurityConfig() {
   }
 
   @Override
-  public void configure(AuthenticationManagerBuilder auth) throws Exception{
-    auth.authenticationEventPublisher(new NoopAuthenticationEventPublisher()).authenticationProvider(new JwtAuthenticationProvider("test123", logger));
-  }
+  protected void configure(HttpSecurity http) throws Exception {
+    HttpSecurity httpSecurity = http.authorizeRequests().
+            requestMatchers(EndpointRequest.to(
+                    InfoEndpoint.class,
+                    HealthEndpoint.class
+            )).permitAll().
+            requestMatchers(EndpointRequest.toAnyEndpoint()). //
+            hasAnyRole("ADMIN", "ACTUATOR"). //
+            antMatchers(HttpMethod.OPTIONS, "/**").
+            permitAll().and().
+            sessionManagement().
+            sessionCreationPolicy(SessionCreationPolicy.STATELESS).
+            and()
+            .csrf().disable();
+    if (keycloaktokenFilterBean.isPresent()) {
+      logger.info("Add keycloak filter!");
+      httpSecurity.addFilterAfter(keycloaktokenFilterBean.get(), BasicAuthenticationFilter.class);
+    }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception{
-    HttpSecurity httpSecurity = http.authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .csrf().disable()
-            .addFilterAfter(new JwtAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
-
-    // if(!applicationProperties.isAuthEnabled()){
-    //   logger.info("Authentication is DISABLED. Adding 'NoAuthenticationFilter' to authentication chain.");
-    httpSecurity = httpSecurity.addFilterAfter(new NoAuthenticationFilter("test123", authenticationManager()), JwtAuthenticationFilter.class);
-    // } else{
-    //   logger.info("Authentication is ENABLED.");
-    //}
+    if (!applicationProperties.isAuthEnabled()) {
+      logger.info("Authentication is DISABLED. Adding 'NoAuthenticationFilter' to authentication chain.");
+      httpSecurity = httpSecurity.addFilterAfter(new NoAuthenticationFilter(applicationProperties.getJwtSecret(), authenticationManager()), BasicAuthenticationFilter.class);
+    } else {
+      logger.info("Authentication is ENABLED.");
+    }
 
     httpSecurity.
             authorizeRequests().
@@ -81,33 +97,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     http.headers().cacheControl().disable();
   }
 
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+    web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
+  }
+
   @Bean
-  public HttpFirewall allowUrlEncodedSlashHttpFirewall(){
+  public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
     DefaultHttpFirewall firewall = new DefaultHttpFirewall();
     firewall.setAllowUrlEncodedSlash(true);
     return firewall;
   }
 
-  @Override
-  public void configure(WebSecurity web) throws Exception{
-    web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
-  }
-
-//  @Bean
-//  CorsConfigurationSource corsConfigurationSource(){
-//    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//    CorsConfiguration config = new CorsConfiguration();
-//    config.addAllowedOrigin("http://localhost:3000");
-//
-//    source.registerCorsConfiguration("/**", config);
-//    return source;
-//  }
   @Bean
-  public FilterRegistrationBean corsFilter(){
+  public FilterRegistrationBean corsFilter() {
     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
-    config.addAllowedOrigin("*"); // @Value: http://localhost:8080
+    config.addAllowedOriginPattern("*"); // @Value: http://localhost:8080
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
     config.addExposedHeader("Content-Range");
@@ -119,32 +126,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     return bean;
   }
 
-//  @Bean
-//  CorsConfigurationSource corsConfigurationSource(){
-//    CorsConfiguration configuration = new CorsConfiguration();
-//    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-//    configuration.setAllowedMethods(Arrays.asList("GET", "POST, PATCH, DELETE, OPTIONS, HEAD"));
-//    configuration.setAllowedHeaders(Arrays.asList("content-range", "authorization", "location"));
-//    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//    source.registerCorsConfiguration("/**", configuration);
-//    return source;
-//  }
-//  @Bean
-//  CorsFilter corsFilter(){
-//    CorsFilter filter = new CorsFilter();
-//    return filter;
-//  }
-//  @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurerAdapter() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:9000");
-//            }
-//        };
-//    }
-//  @Bean
-//  public UserRepositoryImpl userRepositoryImpl(){
-//    return new UserRepositoryImpl();
-//  }
 }

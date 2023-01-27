@@ -21,12 +21,19 @@ import edu.kit.datamanager.python.gemma.GemmaMapping;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Interface for mapping tools. All available mapping tools have to be
  * 'registered' here.
  */
 public interface IMappingTool {
+
+  /**
+   * Logger for this class.
+   */
+  final static Logger LOG = LoggerFactory.getLogger(IMappingTool.class);
 
   /**
    * Map holding all mapping tools.
@@ -46,6 +53,7 @@ public interface IMappingTool {
     Mapping map = null;
     try {
       map = Mapping.valueOf(mapping);
+      LOG.error("Found the following mapping: " + map);
       if (!toolMapper.containsKey(map)) {
         switch (map) {
           case GEMMA:

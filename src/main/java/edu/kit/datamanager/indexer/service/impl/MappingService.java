@@ -15,17 +15,25 @@
  */
 package edu.kit.datamanager.indexer.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.kit.datamanager.clients.SimpleServiceClient;
+import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.indexer.configuration.ApplicationProperties;
 import edu.kit.datamanager.indexer.dao.IMappingRecordDao;
+import edu.kit.datamanager.indexer.domain.AclRecord;
 import edu.kit.datamanager.indexer.domain.MappingRecord;
 import edu.kit.datamanager.indexer.exception.IndexerException;
 import edu.kit.datamanager.indexer.mapping.Mapping;
 import edu.kit.datamanager.indexer.mapping.MappingUtil;
 import edu.kit.datamanager.indexer.util.IndexerUtil;
+import static edu.kit.datamanager.indexer.util.IndexerUtil.DEFAULT_SUFFIX;
+import edu.kit.datamanager.indexer.util.TokenUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,6 +49,7 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +81,10 @@ public class MappingService {
    */
   private MappingUtil mappingUtil;
 
+  /**
+   * Utility for bearer tokens to enable authorized access.
+   */
+  private TokenUtil tokenUtil;
   /**
    * Logger for this class.
    */
@@ -144,7 +157,7 @@ public class MappingService {
    */
   public Optional<Path> executeMapping(URI contentUrl, String mappingId, String mappingType) {
     Optional<Path> returnValue = Optional.ofNullable(null);
-    Optional<Path> download = IndexerUtil.downloadResource(contentUrl);
+    Optional<Path> download = IndexerUtil.downloadResource(contentUrl, tokenUtil);
     MappingRecord mappingRecord = null;
 
     if (download.isPresent()) {
@@ -152,6 +165,7 @@ public class MappingService {
       Path srcFile = download.get();
       // Get mapping file
       Optional<MappingRecord> optionalMappingRecord = mappingRepo.findByMappingIdAndMappingType(mappingId, mappingType);
+      LOGGER.trace("Mapping Record available: '{}'", optionalMappingRecord.isPresent());
       if (optionalMappingRecord.isPresent()) {
         mappingRecord = optionalMappingRecord.get();
         mappingRecord.getMappingDocumentUri();
@@ -185,13 +199,55 @@ public class MappingService {
     Iterator<MappingRecord> findMapping = mappingRepo.findByMappingIdInOrMappingTypeIn(Arrays.asList(mappingId), Arrays.asList(noMappingType)).iterator();
     String mappingType = null;
     if (findMapping.hasNext()) {
+      // If there are several mappings right now only the first mapping is selected. 
       mappingType = findMapping.next().getMappingType();
     }
+    LOGGER.trace("Found mappingType: '{}'", mappingType);
     Optional<Path> executeMapping = executeMapping(contentUrl, mappingId, mappingType);
     if (executeMapping.isPresent()) {
       returnValue.add(executeMapping.get());
-    }
+      Path metadataDocumentPath = executeMapping.get();
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode rootNode = null;
+      String jsonString;
+      try {
+        jsonString = FileUtils.readFileToString(metadataDocumentPath.toFile(), Charset.forName("UTF-8"));
+        rootNode = mapper.readValue(jsonString, JsonNode.class);
+      } catch (IOException ex) {
+        LOGGER.error("Error parsing metadata document", ex);
+        throw new BadArgumentException(ex.getMessage());
+      }
+      // Try to read ACL from contentURI
+      try {
+        AclRecord aclRecord = new AclRecord();
 
+        try {
+          if (contentUrl != null) {
+            String suffix = FilenameUtils.getExtension(contentUrl.getPath());
+            suffix = suffix.trim().isEmpty() ? DEFAULT_SUFFIX : "." + suffix;
+            String compactToken = tokenUtil == null ? null : tokenUtil.getCompactToken(30);
+            if (contentUrl.getHost() != null) {
+              SimpleServiceClient ssc = SimpleServiceClient.create(contentUrl.toString());
+              ssc.accept(AclRecord.ACL_RECORD_MEDIA_TYPE);
+              if (compactToken != null) {
+                ssc.withBearerToken(compactToken);
+              }
+              AclRecord aclRecordFromServer = ssc.getResource(AclRecord.class);
+              if (aclRecordFromServer != null) {
+                aclRecord = aclRecordFromServer;
+              }
+            }
+          }
+        } catch (Throwable tw) {
+          LOGGER.warn("Error reading ACL from URI '" + contentUrl.toString() + "'", tw);
+          //throw new IndexerException("Error downloading resource from '" + contentUrl.toString() + "'!", tw);
+        }
+        aclRecord.setMetadataDocument(rootNode);
+        mapper.writeValue(executeMapping.get().toFile(), aclRecord);
+      } catch (IOException ex) {
+        LOGGER.error("Error while reading mapped file!?", ex);
+      }
+    }
     return returnValue;
   }
 
@@ -211,6 +267,7 @@ public class MappingService {
     } else {
       throw new IndexerException("Could not initialize mapping directory due to missing location!");
     }
+    tokenUtil = new TokenUtil(applicationProperties.getJwtSecret());
   }
 
   /**
