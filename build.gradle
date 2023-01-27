@@ -1,11 +1,12 @@
 plugins { 
     id "org.springframework.boot" version "2.7.8"
-    id "io.spring.dependency-management" version "1.1.0"
+    id "io.spring.dependency-management" version "1.1.0" 
     id "io.freefair.lombok" version "6.6.1"
     id "io.freefair.maven-publish-java" version "6.6.1"
     id "org.owasp.dependencycheck" version "8.0.1"
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'net.researchgate.release' version '3.0.2'
+    id "com.gorylenko.gradle-git-properties" version "2.4.1"
     id 'java'
     id 'jacoco'
 }
@@ -54,17 +55,21 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-gateway-mvc:3.1.4'
 
     // Spring Boot
-    implementation "org.springframework.boot:spring-boot-starter-data-rest"
-    implementation "org.springframework.boot:spring-boot-starter-amqp"
-    implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-   
     // boot starter
-    implementation "org.springframework.boot:spring-boot-starter-validation"    
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-data-rest"
     implementation "org.springframework.boot:spring-boot-starter-mail"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-validation"    
+    implementation "org.springframework.boot:spring-boot-starter-web"
    
+
+    //security
+    implementation "org.springframework.security:spring-security-web:5.7.5"
+    implementation "org.springframework.security:spring-security-config:5.7.5"
+    
  
     // springdoc
     implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
@@ -91,6 +96,9 @@ dependencies {
     implementation("edu.kit.datamanager:generic-message-consumer:1.0.0")
     implementation "edu.kit.datamanager:service-base:1.1.0"
 
+    // actuator
+    implementation 'de.codecentric:spring-boot-admin-starter-client:2.7.10'
+
     runtimeOnly    'org.apache.httpcomponents:httpclient:4.5.6'
 
     // Additional libraries for tests
@@ -111,6 +119,10 @@ dependencies {
 jar {
     // disable plain jar file
     enabled = false
+}
+
+springBoot {    
+    buildInfo()
 }
 
 bootJar {
