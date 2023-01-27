@@ -53,4 +53,7 @@ bootJar {
  
 release {
     tagTemplate = 'v${version}'
+    git {
+        requireBranch.set('main|master')
+    }
 }
