@@ -99,7 +99,7 @@ dependencies {
     // actuator
     implementation 'de.codecentric:spring-boot-admin-starter-client:2.7.10'
 
-    runtimeOnly    'org.apache.httpcomponents:httpclient:4.5.6'
+    runtimeOnly    'org.apache.httpcomponents:httpclient:4.5.14'
 
     // Additional libraries for tests
     testImplementation "com.google.guava:guava:31.1-jre"
