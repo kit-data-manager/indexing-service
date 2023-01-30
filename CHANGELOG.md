@@ -9,8 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [0.1.1] - date 2023-01-30
+### Changed
+- Bump mockito-core from 4.8.1 to 5.0.0 by @dependabot in https://github.com/kit-data-manager/indexing-service/pull/20
+- Enhance configuration files. 
 
-## [0.1.0] - date 2022-01-27
+## [0.1.0] - date 2023-01-27
 ### Added
 - Switch to gitHub Actions for CI
 - Add /actuator/info endpoint
@@ -48,7 +52,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.0.4...v0.1.0
 [0.0.4]: https://github.com/kit-data-manager/indexing-service/compare/v0.0.3...v0.0.4
 [0.0.3]: https://github.com/kit-data-manager/indexing-service/compare/v0.0.2...v0.0.3
