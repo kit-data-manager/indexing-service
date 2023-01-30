@@ -65,12 +65,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-validation"    
     implementation "org.springframework.boot:spring-boot-starter-web"
    
-
-    //security
-    implementation "org.springframework.security:spring-security-web:5.7.5"
-    implementation "org.springframework.security:spring-security-config:5.7.5"
-    
- 
     // springdoc
     implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
     implementation "org.springdoc:springdoc-openapi-data-rest:${springDocVersion}"
@@ -93,7 +87,7 @@ dependencies {
     implementation "org.javers:javers-core:${javersVersion}"
 
     // datamanager
-    implementation("edu.kit.datamanager:generic-message-consumer:1.0.0")
+    implementation "edu.kit.datamanager:generic-message-consumer:1.0.0"
     implementation "edu.kit.datamanager:service-base:1.1.0"
 
     // actuator
@@ -103,7 +97,6 @@ dependencies {
 
     // Additional libraries for tests
     testImplementation "com.google.guava:guava:31.1-jre"
-    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework:spring-test"
     testImplementation "org.springframework.security:spring-security-test"
