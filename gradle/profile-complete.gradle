@@ -14,6 +14,40 @@ asciidoctor {
    outputDir "build/docs"
 }
 
+
+task prepareElastic(type:Exec) {
+  println 'Start elasticsearch container'
+  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+    println '##################################################################'
+    println 'ATTENTION: Please start elasticsearch by your own!'
+    println '##################################################################'
+  } else {
+    commandLine "bash", "./manageIndexingFramework.sh", "test"
+  }
+}
+
+task stopElastic(type:Exec) {
+  println 'Stop elasticsearch container'
+  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+    println '##################################################################'
+    println 'ATTENTION: Please stop elasticsearch by your own!'
+    println '##################################################################'
+  } else {
+    commandLine "bash", "./manageIndexingFramework.sh", "stop_test"
+  }
+}
+
+test {
+    dependsOn prepareElastic
+    finalizedBy stopElastic, jacocoTestReport
+    environment "spring.config.location", "classpath:/test-config/"
+
+    testLogging {
+        outputs.upToDateWhen {false}
+        showStandardStreams = true
+    }
+}
+
 test {
    outputs.dir snippetsDir
    environment "spring.config.location", "classpath:/config/"
