@@ -17,9 +17,11 @@ LABEL stage=build-env
 
 # Install git as additional requirement
 RUN apt-get update && \
-    apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes git && \
-    apt-get install --assume-yes openjdk-17-jdk
+    apt-get upgrade --no-install-recommends --assume-yes && \
+    apt-get install --no-install-recommends --assume-yes git && \
+    apt-get install --no-install-recommends --assume-yes openjdk-17-jdk && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ####################################################
 # Building service
@@ -62,12 +64,15 @@ ENV REPO_NAME=${REPO_NAME_DEFAULT}
 ENV SERVICE_DIRECTORY=${SERVICE_ROOT_DIRECTORY_DEFAULT}${REPO_NAME}
 ENV REPO_PORT=${REPO_PORT_DEFAULT}
 
-# Install python3 & pip3 as additional requirement
+# Install JDK17
 RUN apt-get update && \
-    apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes openjdk-17-jdk 
+    apt-get upgrade --no-install-recommends --assume-yes && \
+    apt-get install --no-install-recommends --assume-yes openjdk-17-jdk && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
     
-RUN pip3 install xmltodict wget
+# Install python3 & pip3 as additional requirement
+RUN pip3 install --no-cache-dir xmltodict==0.13.0 wget==3.2
 
 # Copy service from build container
 RUN mkdir -p ${SERVICE_DIRECTORY}
