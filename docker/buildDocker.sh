@@ -55,7 +55,9 @@ ACTUAL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ################################################################################
 # Determine repo name 
 ################################################################################
-REPO_NAME=$("$ACTUAL_DIR"/../gradlew -q printProjectName)
+cd "$ACTUAL_DIR"/.. || { echo "Failure changing to directory $ACTUAL_DIR/.."; exit 1; }
+
+REPO_NAME=$(./gradlew -q printProjectName)
 # Use only last line
 REPO_NAME=${REPO_NAME##*$'\n'}
 
@@ -79,8 +81,6 @@ else
   fi
   TAG_NAME=$LAST_TAG-$(date -u +%Y-%m-%d)
 fi
-
-cd "$ACTUAL_DIR"/.. || { echo "Failure changing to directory $ACTUAL_DIR/.."; exit 1; }
 
 ################################################################################
 # Build local docker
