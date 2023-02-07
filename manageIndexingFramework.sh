@@ -150,12 +150,12 @@ printInfo "Delete docker image '$1'"
 
 if docker ps | grep -q "$1"; then
     echo "Docker container '$1' still running -> Stop docker container"
-    docker stop $1
+    docker stop "$1"
 fi
 
 if docker ps -a | grep -q "$1"; then
     echo "Docker container '$1' exists -> Remove docker container"
-    docker rm $1
+    docker rm "$1"
 fi
 }
 
@@ -178,7 +178,7 @@ testForCommands="type echo grep mkdir docker"
 
 for command in $testForCommands
 do 
-  if ! type $command >> /dev/null; then
+  if ! type "$command" >> /dev/null; then
     echo "Error: command '$command' is not installed!"
     exit 1
   fi

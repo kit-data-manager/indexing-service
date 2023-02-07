@@ -41,7 +41,7 @@ testForCommands="dirname date docker git"
 
 for command in $testForCommands
 do 
-  if ! type $command >> /dev/null; then
+  if ! type "$command" >> /dev/null; then
     echo "Error: command '$command' is not installed!"
     exit 1
   fi
@@ -85,7 +85,7 @@ fi
 ################################################################################
 # Build local docker
 ################################################################################
-printInfo Build docker container $REPO_NAME:$TAG_NAME 
+printInfo Build docker container "$REPO_NAME":"$TAG_NAME"
 
 if ! docker build -t "$REPO_NAME":"$TAG_NAME" .; then
   echo .

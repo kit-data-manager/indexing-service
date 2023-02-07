@@ -50,15 +50,14 @@ function checkParameters {
   # Check if directory exists
   if [ ! -d "$INSTALLATION_DIRECTORY" ]; then
     # Create directory if it doesn't exists.
-    mkdir -p "$INSTALLATION_DIRECTORY"
-    if [ $? -ne 0 ]; then
+   if ! mkdir -p "$INSTALLATION_DIRECTORY"; then
       echo "Error creating directory '$INSTALLATION_DIRECTORY'!"
       echo "Please make sure that you have the correct access permissions for the specified directory."
       exit 1
     fi
   fi
   # Check if directory is empty
-  if [ ! -z "$(ls -A "$INSTALLATION_DIRECTORY")" ]; then
+   if [ -n "$(ls -A "$INSTALLATION_DIRECTORY")" ]; then
      echo "Directory '$INSTALLATION_DIRECTORY' is not empty!"
      echo "Please enter an empty or a new directory!"
      exit 1
@@ -74,7 +73,7 @@ it 1; }
 function printInfo {
 ################################################################################
 echo "---------------------------------------------------------------------------"
-echo $*
+echo "$*"
 echo "---------------------------------------------------------------------------"
 }
 
@@ -89,8 +88,7 @@ testForCommands="chmod cp dirname find java javac mkdir sed"
 
 for command in $testForCommands
 do 
-  type $command >> /dev/null
-  if [ $? -ne 0 ]; then
+  if ! type "$command" >> /dev/null; then
     echo "Error: command '$command' is not installed!"
     exit 1
   fi
@@ -121,11 +119,11 @@ printInfo "Build microservice of $REPO_NAME at '$INSTALLATION_DIRECTORY'"
 ################################################################################
 
 echo Build service...
-./gradlew -Prelease clean build
+./gradlew -Dprofile=release clean build
 
 
 echo "Copy configuration to '$INSTALLATION_DIRECTORY'..."
-find . -name application-default.properties -exec sed -e "s/src\/test\/resources\/python/scripts\/python/g" '{}' > "$INSTALLATION_DIRECTORY"/application.properties \;
+find ./settings -name application-default.properties -exec cp '{}' "$INSTALLATION_DIRECTORY"/application.properties \;
 
 echo "Copy jar file to '$INSTALLATION_DIRECTORY'..."
 find . -name "$REPO_NAME*.jar" -exec cp '{}' "$INSTALLATION_DIRECTORY" \;
