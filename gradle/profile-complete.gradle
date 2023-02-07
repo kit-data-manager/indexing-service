@@ -41,16 +41,12 @@ test {
     dependsOn prepareElastic
     finalizedBy stopElastic, jacocoTestReport
     environment "spring.config.location", "classpath:/test-config/"
+    outputs.dir snippetsDir
 
     testLogging {
         outputs.upToDateWhen {false}
         showStandardStreams = true
     }
-}
-
-test {
-   outputs.dir snippetsDir
-   environment "spring.config.location", "classpath:/config/"
 }
 
 // Generate coverage report
