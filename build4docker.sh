@@ -119,7 +119,7 @@ printInfo "Build microservice of $REPO_NAME at '$INSTALLATION_DIRECTORY'"
 ################################################################################
 
 echo Build service...
-./gradlew -Dprofile=release clean build
+./gradlew -Dprofile=minimal clean build
 
 
 echo "Copy configuration to '$INSTALLATION_DIRECTORY'..."

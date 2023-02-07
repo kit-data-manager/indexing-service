@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [0.1.2] - date 2023-02-07
+### Fixed
+- Dockerfile for dockerhub
+
+### Changed
+- Bump mockito-core from 5.0.0 to 5.1.1
+- Bump javersVersion from 6.8.2 to 6.9.1
+- Bump postgresql from 42.5.1 to 42.5.3
+- Bump tika-core from 2.6.0 to 2.7.0
+
 ## [0.1.1] - date 2023-01-30
 ### Changed
 - Bump mockito-core from 4.8.1 to 5.0.0 by @dependabot in https://github.com/kit-data-manager/indexing-service/pull/20
@@ -52,7 +62,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.0.4...v0.1.0
 [0.0.4]: https://github.com/kit-data-manager/indexing-service/compare/v0.0.3...v0.0.4

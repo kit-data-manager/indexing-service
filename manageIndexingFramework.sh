@@ -26,12 +26,13 @@ function usage {
 ################################################################################
   echo "Script for managing indexing service."
   echo "USAGE:"
-  echo "  $0 [init|start|test|stop]"
+  echo "  $0 [init|start|test|stop_test|stop]"
   echo " "
-  echo "  init  - Initialize/Reset the whole framework"
-  echo "  start - Start stopped framework"
-  echo "  test  - Start elasticsearch only"
-  echo "  stop  - Stop framework"
+  echo "  init      - Initialize/Reset the whole framework"
+  echo "  start     - Start stopped framework"
+  echo "  test      - Start elasticsearch only"
+  echo "  stop_test - Stop elasticsearch only"
+  echo "  stop      - Stop framework"
   exit 1
 }
 
@@ -51,27 +52,27 @@ function initFramework {
 printInfo "Setup Framework"
 
 echo "Setup configuration directories for metaStore and indexing-Service"
-#mkdir -p "$ACTUAL_DIR/settings/metastore"
+mkdir -p "$ACTUAL_DIR/settings/metastore"
 mkdir -p "$ACTUAL_DIR/settings/indexing"
 
 echo "Setup network for docker..."
 docker network create $DOCKER_NETWORK
 
-#echo "Start RabbitMQ server..."
-#deleteDockerContainer $DOCKER_RABBIT
-#docker run -d --hostname rabbitmq --net $DOCKER_NETWORK --name $DOCKER_RABBIT -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+echo "Start RabbitMQ server..."
+deleteDockerContainer $DOCKER_RABBIT
+docker run -d --hostname rabbitmq --net $DOCKER_NETWORK --name $DOCKER_RABBIT -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 
-#echo "Start metaStore2..."
-#deleteDockerContainer $DOCKER_METASTORE
-#docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/metastore2/config --net $DOCKER_NETWORK --name $DOCKER_METASTORE -p8040:8040 kitdm/metastore2:latest
+echo "Start metaStore2..."
+deleteDockerContainer $DOCKER_METASTORE
+docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/metastore2/config --net $DOCKER_NETWORK --name $DOCKER_METASTORE -p8040:8040 kitdm/metastore2:latest
 
 echo "Start elasticsearch server..."
 deleteDockerContainer $DOCKER_ELASTIC
 docker run -d --net $DOCKER_NETWORK --name $DOCKER_ELASTIC  -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3
 
-#echo "Start Indexing-Service..."
-#deleteDockerContainer $DOCKER_INDEXING
-#docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/indexing-service/config --net $DOCKER_NETWORK --name $DOCKER_INDEXING  -p 8050:8050 indexing-service:latest
+echo "Start Indexing-Service..."
+deleteDockerContainer $DOCKER_INDEXING
+docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/indexing-service/config --net $DOCKER_NETWORK --name $DOCKER_INDEXING  -p 8050:8050 indexing-service:latest
 
 #printInfo "Ready to use metastore"
 }
@@ -107,11 +108,11 @@ function startFramework {
 ################################################################################
 printInfo "(Re)start metastore and all linked services..."
 
-#echo "Start RabbitMQ server..."
-#docker start $DOCKER_RABBIT 
+echo "Start RabbitMQ server..."
+docker start $DOCKER_RABBIT 
 
-#echo "Start metastore2..."
-#docker start $DOCKER_METASTORE 
+echo "Start metastore2..."
+docker start $DOCKER_METASTORE 
 
 echo "Start elasticsearch server..."
 docker start $DOCKER_ELASTIC 
@@ -133,11 +134,11 @@ docker stop $DOCKER_INDEXING
 echo "Stop elasticsearch server..."
 docker stop $DOCKER_ELASTIC 
 
-#echo "Stop metastore2..."
-#docker stop $DOCKER_METASTORE 
+echo "Stop metastore2..."
+docker stop $DOCKER_METASTORE 
 
-#echo "Stop RabbitMQ server..."
-#docker stop $DOCKER_RABBIT 
+echo "Stop RabbitMQ server..."
+docker stop $DOCKER_RABBIT 
 
 printInfo "Framework stopped!"
 }
@@ -149,12 +150,12 @@ printInfo "Delete docker image '$1'"
 
 if docker ps | grep -q "$1"; then
     echo "Docker container '$1' still running -> Stop docker container"
-    docker stop $1
+    docker stop "$1"
 fi
 
 if docker ps -a | grep -q "$1"; then
     echo "Docker container '$1' exists -> Remove docker container"
-    docker rm $1
+    docker rm "$1"
 fi
 }
 
@@ -177,7 +178,7 @@ testForCommands="type echo grep mkdir docker"
 
 for command in $testForCommands
 do 
-  if ! type $command >> /dev/null; then
+  if ! type "$command" >> /dev/null; then
     echo "Error: command '$command' is not installed!"
     exit 1
   fi
