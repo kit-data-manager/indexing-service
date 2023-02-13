@@ -91,7 +91,7 @@ dependencies {
     implementation "edu.kit.datamanager:service-base:1.1.0"
 
     // actuator
-    implementation 'de.codecentric:spring-boot-admin-starter-client:2.7.10'
+    implementation 'de.codecentric:spring-boot-admin-starter-client:3.0.0'
 
     runtimeOnly    'org.apache.httpcomponents:httpclient:4.5.14'
 
