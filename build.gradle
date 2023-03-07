@@ -1,9 +1,9 @@
 plugins { 
-    id "org.springframework.boot" version "2.7.8"
+    id "org.springframework.boot" version "2.7.9"
     id "io.spring.dependency-management" version "1.1.0" 
-    id "io.freefair.lombok" version "6.6.1"
-    id "io.freefair.maven-publish-java" version "6.6.1"
-    id "org.owasp.dependencycheck" version "8.0.2"
+    id "io.freefair.lombok" version "6.6.3"
+    id "io.freefair.maven-publish-java" version "6.6.3"
+    id "org.owasp.dependencycheck" version "8.1.2"
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'net.researchgate.release' version '3.0.2'
     id "com.gorylenko.gradle-git-properties" version "2.4.1"
@@ -13,7 +13,7 @@ plugins {
 
 ext {
   // versions of dependencies
-  javersVersion     = '6.9.1'
+  javersVersion     = '6.11.0'
   springDocVersion  = '1.6.14'
 }
 
@@ -52,7 +52,7 @@ if (System.getProperty('profile') == 'minimal') {
 dependencies {
     // Spring
     implementation 'org.springframework:spring-messaging:5.3.25'
-    implementation 'org.springframework.cloud:spring-cloud-gateway-mvc:3.1.4'
+    implementation 'org.springframework.cloud:spring-cloud-gateway-mvc:3.1.6'
 
     // Spring Boot
     // boot starter
@@ -71,7 +71,7 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-webmvc-core:${springDocVersion}"
 
     // driver for postgres
-    implementation "org.postgresql:postgresql:42.5.3"
+    implementation "org.postgresql:postgresql:42.5.4"
     //driver for h2
     implementation "com.h2database:h2:2.1.214"
     
@@ -80,7 +80,7 @@ dependencies {
     implementation "commons-codec:commons-codec:1.15"
   
     implementation "com.github.jknack:handlebars:4.3.1"
-    implementation "org.json:json:20220924"
+    implementation "org.json:json:20230227"
   
     // javers
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
