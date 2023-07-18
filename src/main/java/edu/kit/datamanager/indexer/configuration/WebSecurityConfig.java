@@ -17,6 +17,7 @@ package edu.kit.datamanager.indexer.configuration;
 
 import edu.kit.datamanager.security.filter.KeycloakTokenFilter;
 import edu.kit.datamanager.security.filter.NoAuthenticationFilter;
+import edu.kit.datamanager.security.filter.PublicAuthenticationFilter;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,14 +29,13 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -49,8 +49,8 @@ import org.springframework.web.filter.CorsFilter;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig {
 
   private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
@@ -60,46 +60,62 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   private Optional<KeycloakTokenFilter> keycloaktokenFilterBean;
 
+  private static final String[] AUTH_WHITELIST_SWAGGER_UI = {
+    // -- Swagger UI v2
+    "/v2/api-docs",
+    "/swagger-resources",
+    "/swagger-resources/**",
+    "/configuration/ui",
+    "/configuration/security",
+    "/swagger-ui.html",
+    "/webjars/**",
+    // -- Swagger UI v3 (OpenAPI)
+    "/v3/api-docs/**",
+    "/swagger-ui/**"
+  // other public endpoints of your API may be appended to this array
+  };
+
   public WebSecurityConfig() {
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    HttpSecurity httpSecurity = http.authorizeRequests().
-            requestMatchers(EndpointRequest.to(
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    HttpSecurity httpSecurity = http.authorizeHttpRequests(
+            authorize -> authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().
+                   requestMatchers(AUTH_WHITELIST_SWAGGER_UI).permitAll().
+   requestMatchers(EndpointRequest.to(
                     InfoEndpoint.class,
                     HealthEndpoint.class
             )).permitAll().
             requestMatchers(EndpointRequest.toAnyEndpoint()). //
-            hasAnyRole("ADMIN", "ACTUATOR"). //
-            antMatchers(HttpMethod.OPTIONS, "/**").
-            permitAll().and().
-            sessionManagement().
-            sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-            and()
-            .csrf().disable();
+            hasAnyRole("ADMIN", "ACTUATOR")).
+            sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
+            csrf(csrf -> csrf.disable());
     if (keycloaktokenFilterBean.isPresent()) {
       logger.info("Add keycloak filter!");
       httpSecurity.addFilterAfter(keycloaktokenFilterBean.get(), BasicAuthenticationFilter.class);
+      logger.info("Add public authentication filter!");
+      httpSecurity = httpSecurity.addFilterAfter(new PublicAuthenticationFilter(applicationProperties.getJwtSecret()), BasicAuthenticationFilter.class);
     }
 
     if (!applicationProperties.isAuthEnabled()) {
       logger.info("Authentication is DISABLED. Adding 'NoAuthenticationFilter' to authentication chain.");
-      httpSecurity = httpSecurity.addFilterAfter(new NoAuthenticationFilter(applicationProperties.getJwtSecret(), authenticationManager()), BasicAuthenticationFilter.class);
+      AuthenticationManager defaultAuthenticationManager = http.getSharedObject(AuthenticationManager.class);
+      httpSecurity = httpSecurity.addFilterAfter(new NoAuthenticationFilter(applicationProperties.getJwtSecret(), defaultAuthenticationManager), BasicAuthenticationFilter.class);
     } else {
       logger.info("Authentication is ENABLED.");
     }
 
-    httpSecurity.
-            authorizeRequests().
-            antMatchers("/api/v1").authenticated();
 
-    http.headers().cacheControl().disable();
+    httpSecurity.headers(headers -> headers.cacheControl(cache -> cache.disable()));
+
+    return httpSecurity.build();
   }
 
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-    web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
+  @Bean
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return web -> web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
   }
 
   @Bean
