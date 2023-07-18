@@ -76,7 +76,7 @@ dependencies {
     implementation "com.h2database:h2:2.1.214"
     
     //apache
-    implementation "org.apache.tika:tika-core:2.7.0"
+    implementation "org.apache.tika:tika-core:2.8.0"
     implementation "commons-codec:commons-codec:1.16.0"
   
     implementation "com.github.jknack:handlebars:4.3.1"
