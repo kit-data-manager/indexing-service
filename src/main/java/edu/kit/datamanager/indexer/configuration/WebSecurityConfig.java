@@ -76,21 +76,23 @@ public class WebSecurityConfig {
   };
 
   public WebSecurityConfig() {
+    // Not used
   }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     HttpSecurity httpSecurity = http.authorizeHttpRequests(
             authorize -> authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().
-                   requestMatchers(AUTH_WHITELIST_SWAGGER_UI).permitAll().
-   requestMatchers(EndpointRequest.to(
-                    InfoEndpoint.class,
-                    HealthEndpoint.class
-            )).permitAll().
-            requestMatchers(EndpointRequest.toAnyEndpoint()). //
-            hasAnyRole("ADMIN", "ACTUATOR")).
+                    requestMatchers(AUTH_WHITELIST_SWAGGER_UI).permitAll().
+                    requestMatchers(EndpointRequest.to(
+                            InfoEndpoint.class,
+                            HealthEndpoint.class
+                    )).permitAll().
+                    requestMatchers(EndpointRequest.toAnyEndpoint()). //
+                    hasAnyRole("ADMIN", "ACTUATOR").
+                    requestMatchers("/**").authenticated()).
             sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
+                    session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
             csrf(csrf -> csrf.disable());
     if (keycloaktokenFilterBean.isPresent()) {
       logger.info("Add keycloak filter!");
@@ -106,7 +108,6 @@ public class WebSecurityConfig {
     } else {
       logger.info("Authentication is ENABLED.");
     }
-
 
     httpSecurity.headers(headers -> headers.cacheControl(cache -> cache.disable()));
 

@@ -147,7 +147,7 @@ public class MappingControllerDocumentationTest {
     MockMultipartFile mappingFile = new MockMultipartFile("document", EXAMPLE_SCHEMA_ID_XML + "4gemma.mapping", "application/json", mappingContent.getBytes());
 
     Assert.assertEquals(0, mappingsDir.list().length);
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isCreated()).andDo(document("post-xml-mapping", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).andExpect(redirectedUrlPattern("http://*:*//api/v1/mapping/" + record.getMappingId() + "/" + record.getMappingType())).andReturn();
     Assert.assertEquals(1, mappingsDir.list().length);
@@ -160,15 +160,15 @@ public class MappingControllerDocumentationTest {
     mappingFile = new MockMultipartFile("document", EXAMPLE_SCHEMA_ID_JSON + "4gemma.mapping", "application/json", mappingContent.getBytes());
 
     Assert.assertEquals(1, mappingsDir.list().length);
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isCreated()).andDo(document("post-json-mapping", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).andExpect(redirectedUrlPattern("http://*:*//api/v1/mapping/" + record.getMappingId() + "/" + record.getMappingType())).andReturn();
     Assert.assertEquals(2, mappingsDir.list().length);
 
     // list all mappings 
-    this.mockMvc.perform(get("/api/v1/mapping/")).andExpect(status().isOk()).andDo(document("get-all-mappings", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).andReturn().getResponse();
+    this.mockMvc.perform(get("/api/v1/mapping")).andExpect(status().isOk()).andDo(document("get-all-mappings", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).andReturn().getResponse();
 
-    this.mockMvc.perform(get("/api/v1/mapping/").param("page", Integer.toString(0)).param("size", Integer.toString(20))).andExpect(status().isOk()).andDo(document("get-all-mappings-pagination", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).andReturn().getResponse();
+    this.mockMvc.perform(get("/api/v1/mapping").param("page", Integer.toString(0)).param("size", Integer.toString(20))).andExpect(status().isOk()).andDo(document("get-all-mappings-pagination", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).andReturn().getResponse();
 
     // Get single mapping record
     String etag = this.mockMvc.perform(get("/api/v1/mapping/" + EXAMPLE_SCHEMA_ID_JSON + "/" + GEMMA.name()).accept(MappingRecord.MAPPING_RECORD_MEDIA_TYPE.toString())).andExpect(status().isOk()).andDo(document("get-single-mapping", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()))).andReturn().getResponse().getHeader("ETag");
