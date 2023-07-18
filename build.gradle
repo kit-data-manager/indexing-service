@@ -77,7 +77,7 @@ dependencies {
     
     //apache
     implementation "org.apache.tika:tika-core:2.7.0"
-    implementation "commons-codec:commons-codec:1.15"
+    implementation "commons-codec:commons-codec:1.16.0"
   
     implementation "com.github.jknack:handlebars:4.3.1"
     implementation "org.json:json:20230618"
