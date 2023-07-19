@@ -17,7 +17,7 @@ A standalone service which receives messages about changes in metadata documents
 
 Dependencies that are needed to build and are not being downloaded via gradle:
 
-- OpenJDK 11
+- OpenJDK 17 or higher
 ```
 $ bash build.sh PATH/TO/INSTALLATION/DIR
 ```
