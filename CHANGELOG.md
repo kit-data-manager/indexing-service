@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Bump org.springframework.boot from 2.7.12 to 3.1.1
 
 ## [0.1.3] - date 2023-02-10
 ### Fixed

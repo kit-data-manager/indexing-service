@@ -1,5 +1,5 @@
 plugins { 
-    id "org.springframework.boot" version "2.7.12"
+    id "org.springframework.boot" version "3.1.1"
     id "io.spring.dependency-management" version "1.1.0" 
     id "io.freefair.lombok" version "8.1.0"
     id "io.freefair.maven-publish-java" version "8.0.1"
@@ -13,8 +13,8 @@ plugins {
 
 ext {
   // versions of dependencies
-  javersVersion     = '6.13.0'
-  springDocVersion  = '1.7.0'
+  javersVersion     = '7.0.1'
+  springDocVersion  = '2.1.0'
 }
 
 description = 'Generic indexing service supporting different mapping implementations.'
@@ -30,8 +30,8 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
  
 configurations {
@@ -51,24 +51,24 @@ if (System.getProperty('profile') == 'minimal') {
 
 dependencies {
     // Spring
-    implementation 'org.springframework:spring-messaging:5.3.25'
-    implementation 'org.springframework.cloud:spring-cloud-gateway-mvc:3.1.6'
+    implementation 'org.springframework:spring-messaging:6.0.2'
+    implementation 'org.springframework.cloud:spring-cloud-gateway-mvc:4.0.6'
 
     // Spring Boot
     // boot starter
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-amqp"
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-starter-data-rest"
-    implementation "org.springframework.boot:spring-boot-starter-mail"
-    implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.boot:spring-boot-starter-validation"    
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
     implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation 'org.springframework.data:spring-data-elasticsearch:5.1.0'
    
     // springdoc
-    implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
-    implementation "org.springdoc:springdoc-openapi-data-rest:${springDocVersion}"
-    implementation "org.springdoc:springdoc-openapi-webmvc-core:${springDocVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-common:${springDocVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${springDocVersion}"
 
     // driver for postgres
     implementation "org.postgresql:postgresql:42.6.0"
@@ -88,25 +88,26 @@ dependencies {
 
     // datamanager
     implementation "edu.kit.datamanager:generic-message-consumer:1.0.0"
-    implementation "edu.kit.datamanager:service-base:1.1.0"
+    implementation "edu.kit.datamanager:repo-core:1.2.1"
+    implementation "edu.kit.datamanager:service-base:1.2.0"
 
     // actuator
-    implementation 'de.codecentric:spring-boot-admin-starter-client:2.7.10'
+    implementation 'de.codecentric:spring-boot-admin-starter-client:3.0.4'
 
     runtimeOnly    'org.apache.httpcomponents:httpclient:4.5.14'
 
     // Additional libraries for tests
     testImplementation "com.google.guava:guava:31.1-jre"
-    testImplementation "org.springframework.boot:spring-boot-starter-test"
-    testImplementation "org.springframework:spring-test"
-    testImplementation "org.springframework.security:spring-security-test"
    
     //Java 11 Support 
     testImplementation "org.mockito:mockito-core:5.2.0"
     testImplementation "junit:junit:4.13.2"
 
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.7.RELEASE'
-    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.7.RELEASE'
+     // boot starter
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0'
+    testImplementation "org.springframework.security:spring-security-test"
+    testImplementation "org.springframework:spring-test"
 }
 
 jar {
@@ -126,11 +127,12 @@ bootJar {
     from ("${asciidoctor.outputDir}/html5") {
         into 'static/docs'
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE 
     launchScript()
 }
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.10"
 }
 
 // task for printing project name.
