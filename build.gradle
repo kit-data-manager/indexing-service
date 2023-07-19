@@ -127,6 +127,7 @@ bootJar {
     from ("${asciidoctor.outputDir}/html5") {
         into 'static/docs'
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE 
     launchScript()
 }
 
