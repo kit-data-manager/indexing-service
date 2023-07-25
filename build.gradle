@@ -26,13 +26,13 @@ println "JDK version: ${JavaVersion.current()}"
 
 repositories {
     mavenLocal() 
-    jcenter()
     mavenCentral()
 }
 
-sourceCompatibility = 1.17
-targetCompatibility = 1.17
-
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
  
 configurations {
     asciidoctorExt
