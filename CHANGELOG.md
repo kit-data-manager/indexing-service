@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- The mappings directory is now a subdirectory of the installation directory by default.
 
 ## [0.9.0] - date 2023-07-25
 Update service to Spring Boot 3.
