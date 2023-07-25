@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+## [0.9.0] - date 2023-07-25
+Update service to Spring Boot 3.
+### Changed
 - Bump actions/checkout from 2 to 3 
 - Bump actions/setup-java from 2 to 3
 - Bump crazy-max/ghaction-docker-meta from 1 to 4 
@@ -92,7 +96,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.3...v0.9.0
 [0.1.3]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.0...v0.1.1
