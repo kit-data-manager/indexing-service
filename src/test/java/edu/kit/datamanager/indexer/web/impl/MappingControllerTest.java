@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,6 +65,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -836,6 +838,16 @@ public class MappingControllerTest {
       Assert.assertEquals("File should be still there: " + mappingsDir.list()[0], expectedFilename, mappingsDir.list()[0]);
     result = this.mockMvc.perform(get(getMappingIdUrl).header("Accept", MappingRecord.MAPPING_RECORD_MEDIA_TYPE)).andDo(print()).andExpect(status().isOk()).andReturn();
     Assert.assertEquals("Still one entry", 1, mappingRecordDao.count());
+  }
+
+  @Test
+  public void testSwaggerUI() throws Exception {
+
+    // Test for swagger definition
+    this.mockMvc.perform(get("/v3/api-docs"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.info.title", Matchers.hasToString("Indexing and Mapping Microservice - RESTful API")));
   }
 
   private void create2Mappings() throws Exception {
