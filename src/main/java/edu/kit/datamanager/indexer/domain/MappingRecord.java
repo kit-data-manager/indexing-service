@@ -24,12 +24,12 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.http.MediaType;
 
@@ -51,7 +51,7 @@ public class MappingRecord implements EtagSupport, Serializable {
   @NotBlank(message = "Type of the mapping, e.g. GEMMA, XSLT, handlebars, ....")
   private String mappingType;
   @NotNull(message = "A list of access control entries for resticting access.")
-  @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
    private final Set<AclEntry> acl = new HashSet<>();
   @NotBlank(message = "The metadata document uri, e.g. pointing to a local file.")
   private String mappingDocumentUri;
