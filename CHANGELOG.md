@@ -33,11 +33,12 @@ Update service to Spring Boot 3.
 - Bump org.mockito:mockito-core from 5.1.1 to 5.4.0
 - Bump org.owasp.dependencycheck from 8.0.2 to 8.3.1 
 - Bump org.postgresql:postgresql from 42.5.3 to 42.6.0 
-- Bump org.springframework.boot from 2.7.8 to 3.1.1
+- Bump org.springframework.boot from 2.7.8 to 3.1.2
 - Bump org.springframework:spring-messaging from 5.3.25 to 6.0.2.
 - Bump org.springframework.cloud:spring-cloud-gateway-mvc from 3.1.4 to 4.0.6.
 - Bump org.springframework.data:spring-data-elasticsearch from 5.1.0 to 5.1.2.
 - Bump springDocVersion from 1.6.14 to 2.1.0
+- Bump gradle from 7.6 to 8.2.1
 
 ## [0.1.3] - date 2023-02-10
 ### Fixed
