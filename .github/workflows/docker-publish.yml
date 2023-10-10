@@ -28,7 +28,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set up OpenJDK version ...
       uses: actions/setup-java@v3
       with:
@@ -58,7 +58,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Build image
       run: |
