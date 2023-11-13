@@ -13,7 +13,7 @@ plugins {
 
 ext {
   // versions of dependencies
-  javersVersion     = '7.3.3'
+  javersVersion     = '7.3.5'
   springDocVersion  = '2.2.0'
 }
 
