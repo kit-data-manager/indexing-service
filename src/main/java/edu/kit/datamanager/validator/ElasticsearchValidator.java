@@ -17,8 +17,8 @@ package edu.kit.datamanager.validator;
 
 import edu.kit.datamanager.annotations.ElasticsearchURL;
 import edu.kit.datamanager.indexer.util.ElasticsearchUtil;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
