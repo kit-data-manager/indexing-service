@@ -16,7 +16,7 @@
 package edu.kit.datamanager.validator;
 
 import java.io.IOException;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidatorContext;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

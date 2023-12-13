@@ -6,12 +6,15 @@ ext {
    
 asciidoctor {
   attributes "snippets": snippetsDir,
-            "version": jar.version,
-            "date": new SimpleDateFormat("yyyy-MM-dd").format(new Date())
+             "version": jar.archiveVersion,
+             "date": new SimpleDateFormat("yyyy-MM-dd").format(new Date())
    inputs.dir snippetsDir
    dependsOn test  
    sourceDir "docs/"
    outputDir "build/docs"
+    forkOptions {
+      jvmArgs "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED", "--add-opens", "java.base/java.io=ALL-UNNAMED"
+    }
 }
 
 

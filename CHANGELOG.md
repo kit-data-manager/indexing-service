@@ -10,6 +10,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- The mappings directory is now a subdirectory of the installation directory by default.
+
+## [0.9.0] - date 2023-07-25
+Update service to Spring Boot 3.
+### Changed
+- Bump actions/checkout from 2 to 3 
+- Bump actions/setup-java from 2 to 3
+- Bump crazy-max/ghaction-docker-meta from 1 to 4 
+- Bump codecov/codecov-action from 1 to 3 
+- Bump docker/build-push-action from 2 to 4 
+- Bump docker/login-action from 1 to 2
+- Bump docker/setup-buildx-action from 1 to 2
+- Bump docker/setup-qemu-action from 1 to 2 
+- Bump github/codeql-action from 1 to 2
+- Bump com.h2database:h2 from 2.1.214 to 2.2.220.
+- Bump de.codecentric:spring-boot-admin-starter-client from 2.7.10 to 3.0.4.
+- Bump io.freefair.lombok from 6.6.1 to 6.6.3 
+- Bump io.freefair.maven-publish-java from 6.6.1 to 6.6.3 
+- Bump io.spring.dependency-management from 1.1.0 to 1.1.2
+- Bump javersVersion from 6.9.1 to 7.3.0
+- Bump org.json:json from 20220924 to 20230618.
+- Bump org.mockito:mockito-core from 5.1.1 to 5.4.0
+- Bump org.owasp.dependencycheck from 8.0.2 to 8.3.1 
+- Bump org.postgresql:postgresql from 42.5.3 to 42.6.0 
+- Bump org.springframework.boot from 2.7.8 to 3.1.2
+- Bump org.springframework:spring-messaging from 5.3.25 to 6.0.2.
+- Bump org.springframework.cloud:spring-cloud-gateway-mvc from 3.1.4 to 4.0.6.
+- Bump org.springframework.data:spring-data-elasticsearch from 5.1.0 to 5.1.2.
+- Bump springDocVersion from 1.6.14 to 2.1.0
+- Bump gradle from 7.6 to 8.2.1
 
 ## [0.1.3] - date 2023-02-10
 ### Fixed
@@ -68,7 +98,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.3...v0.9.0
 [0.1.3]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.0...v0.1.1

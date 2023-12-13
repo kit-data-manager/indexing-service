@@ -20,9 +20,9 @@ import edu.kit.datamanager.entities.PERMISSION;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.http.MediaType;
 
@@ -42,8 +42,8 @@ public class AclRecord implements Serializable {
   public final static MediaType METADATA_RECORD_MEDIA_TYPE = MediaType.valueOf(METADATA_RECORD_TYPE);
 
   @NotNull(message = "A list of access control entries for resticting access for READ.")
-  @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-  private final Set<String> readSids = new HashSet<>();
+  @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+  private final Set<String> read = new HashSet<>();
   @NotBlank(message = "The metadata record.")
   private Object metadataRecord;
   @NotBlank(message = "The metadata document.")

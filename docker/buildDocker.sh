@@ -85,14 +85,14 @@ fi
 ################################################################################
 # Build local docker
 ################################################################################
-printInfo Build docker container "$REPO_NAME":"$TAG_NAME"
+printInfo Build docker container kitdm/"$REPO_NAME":"$TAG_NAME"
 
-if ! docker build -t "$REPO_NAME":"$TAG_NAME" .; then
+if ! docker build -t kitdm/"$REPO_NAME":"$TAG_NAME" .; then
   echo .
   printInfo "ERROR while building docker container!"
   usage
 else 
   echo .
   printInfo Now you can create and start the container by calling docker "run -d -p8050:8050 --name 
-indexing4docker $REPO_NAME:$TAG_NAME"
+indexing4docker kitdm/$REPO_NAME:$TAG_NAME"
 fi

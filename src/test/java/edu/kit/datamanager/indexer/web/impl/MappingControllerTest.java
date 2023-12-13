@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,6 +65,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -146,7 +148,7 @@ public class MappingControllerTest {
     MockMultipartFile mappingFile = new MockMultipartFile("document", "my_dc4gemma.mapping", "application/json", mappingContent.getBytes());
 
       Assert.assertEquals(0, mappingsDir.list().length);
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isCreated()).andExpect(redirectedUrlPattern("http://*:*//api/v1/mapping/" + record.getMappingId() + "/" + record.getMappingType())).andReturn();
       Assert.assertEquals(1, mappingsDir.list().length);
@@ -167,7 +169,7 @@ public class MappingControllerTest {
 
     MockMultipartFile mappingFile = new MockMultipartFile("document", "my_dc4gemma.mapping", "application/json", mappingContent.getBytes());
 
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(mappingFile)).andDo(print()).andExpect(status().isBadRequest()).andReturn();
   }
 
@@ -182,7 +184,7 @@ public class MappingControllerTest {
     MockMultipartFile recordFile = new MockMultipartFile("record", "record.json", "application/json", "".getBytes());
     MockMultipartFile mappingFile = new MockMultipartFile("document", "my_dc4gemma.mapping", "application/json", mappingContent.getBytes());
 
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isBadRequest()).andReturn();
   }
@@ -202,7 +204,7 @@ public class MappingControllerTest {
 
     MockMultipartFile recordFile = new MockMultipartFile("record", "record.json", "application/json", mapper.writeValueAsString(record).getBytes());
 
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile)).andDo(print()).andExpect(status().isBadRequest()).andReturn();
   }
 
@@ -219,14 +221,14 @@ public class MappingControllerTest {
     MockMultipartFile recordFile = new MockMultipartFile("record", "record.json", "application/json", mapper.writeValueAsString(record).getBytes());
     MockMultipartFile mappingFile = new MockMultipartFile("document", "my_dc4gemma.mapping", "application/json", mappingContent.getBytes());
 
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isBadRequest()).andReturn();
     record.setMappingId(MAPPING_ID);
     record.setMappingType(null);
     recordFile = new MockMultipartFile("record", "record.json", "application/json", mapper.writeValueAsString(record).getBytes());
 
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isBadRequest()).andReturn();
   }
@@ -249,7 +251,7 @@ public class MappingControllerTest {
     MockMultipartFile recordFile = new MockMultipartFile("record", "record.json", "application/json", mapper.writeValueAsString(record).getBytes());
     MockMultipartFile mappingFile = new MockMultipartFile("document", "my_dc4gemma.mapping", "application/json", mappingContent.getBytes());
 
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isConflict()).andReturn();
   }
@@ -276,7 +278,7 @@ public class MappingControllerTest {
     MockMultipartFile mappingFile = new MockMultipartFile("document", "my_dc4gemma.mapping", "application/json", mappingContent.getBytes());
 
      Assert.assertEquals(0, mappingsDir.list().length);
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isCreated()).andExpect(redirectedUrlPattern("http://*:*//api/v1/mapping/" + record.getMappingId() + "/" + record.getMappingType())).andReturn();
      Assert.assertEquals(1, mappingsDir.list().length);
@@ -838,6 +840,16 @@ public class MappingControllerTest {
     Assert.assertEquals("Still one entry", 1, mappingRecordDao.count());
   }
 
+  @Test
+  public void testSwaggerUI() throws Exception {
+
+    // Test for swagger definition
+    this.mockMvc.perform(get("/v3/api-docs"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.info.title", Matchers.hasToString("Indexing and Mapping Microservice - RESTful API")));
+  }
+
   private void create2Mappings() throws Exception {
     System.out.println("createMapping");
     String mappingContent = FileUtils.readFileToString(new File("src/test/resources/mapping/gemma/simple.mapping"), StandardCharsets.UTF_8);
@@ -850,7 +862,7 @@ public class MappingControllerTest {
     MockMultipartFile recordFile = new MockMultipartFile("record", "record.json", "application/json", mapper.writeValueAsString(record).getBytes());
     MockMultipartFile mappingFile = new MockMultipartFile("document", "my_dc4gemma.mapping", "application/json", mappingContent.getBytes());
 
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isCreated()).andExpect(redirectedUrlPattern("http://*:*//api/v1/mapping/" + record.getMappingId() + "/" + record.getMappingType())).andReturn();
 
@@ -860,7 +872,7 @@ public class MappingControllerTest {
     recordFile = new MockMultipartFile("record", "record.json", "application/json", mapper.writeValueAsString(record).getBytes());
     mappingFile = new MockMultipartFile("document", "my_dc4gemma.mapping", "application/json", mappingContent.getBytes());
 
-    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping/").
+    this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/mapping").
             file(recordFile).
             file(mappingFile)).andDo(print()).andExpect(status().isCreated()).andExpect(redirectedUrlPattern("http://*:*//api/v1/mapping/" + record.getMappingId() + "/" + record.getMappingType())).andReturn();
   }
