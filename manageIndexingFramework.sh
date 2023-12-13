@@ -87,7 +87,7 @@ deleteDockerContainer $DOCKER_ELASTIC_TEST
 docker run -d --name $DOCKER_ELASTIC_TEST  -p 41200:9200 -p 41300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3
 
 echo "Wait until server is up and running. This may last some seconds..."
-wget localhost:41200 -o /dev/null
+wget localhost:41200 -q -o /dev/null -O /dev/null
 
 printInfo "Ready to use indexing service 4 test"
 }

@@ -1,11 +1,18 @@
 # Indexing-service
 
-![GitHub](../../actions/workflows/gradle.yml/badge.svg)
-[![codecov](https://codecov.io/gh/kit-data-manager/indexing-service/branch/master/graph/badge.svg?token=J9TP8YSZU6)](https://codecov.io/gh/kit-data-manager/indexing-service)
+[![Build Status](https://github.com/kit-data-manager/indexing-service/actions/workflows/gradle.yml/badge.svg)](https://github.com/kit-data-manager/indexing-service/actions/workflows/gradle.yml)
+[![codecov](https://codecov.io/gh/kit-data-manager/indexing-service/graph/badge.svg)](https://codecov.io/gh/kit-data-manager/indexing-service)
+[![CodeQL](https://github.com/kit-data-manager/indexing-service/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/kit-data-manager/indexing-service/actions/workflows/codeql-analysis.yml)
 ![License](https://img.shields.io/github/license/kit-data-manager/indexing-service.svg)
+[![Docker Build Status](https://img.shields.io/docker/automated/kitdm/indexing-service)](https://hub.docker.com/r/kitdm/indexing-service/tags)
+[![Docker Image Version](https://img.shields.io/docker/v/kitdm/indexing-service/latest)](https://hub.docker.com/r/kitdm/indexing-service/tags)
+[![Docker Pulls](https://img.shields.io/docker/pulls/kitdm/indexing-service)](https://hub.docker.com/r/kitdm/indexing-service/tags)
+
+
+:information_source:
+The service should not be directly accessible from the outside. 
 
 :warning:
-Not fully tested yet!
 For mapping documents only Gemma is available currently!
 
 A standalone service which receives messages about changes in metadata documents maps them to a common format and ingests them into elasticsearch.
@@ -17,7 +24,7 @@ A standalone service which receives messages about changes in metadata documents
 
 Dependencies that are needed to build and are not being downloaded via gradle:
 
-- OpenJDK 11
+- OpenJDK 17 or higher
 ```
 $ bash build.sh PATH/TO/INSTALLATION/DIR
 ```
@@ -30,12 +37,15 @@ $ PATH/TO/INSTALLATION/DIR/run.sh
 
 You might want to take a look at testbed4inf, which should make it easy to satisfy those.
 
-- Gemma?
+- Python3
+  - PIP
+  - xmltodict
+  - wget
 - a running RabbitMQ instance 
 - a running elasticsearch instance
 
 ### Setup using Docker
-#### Install Gemma
+#### Install Python for Gemma
 ```
 sudo apt-get install --assume-yes python3 python3-pip 
 pip3 install xmltodict wget

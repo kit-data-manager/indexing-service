@@ -17,7 +17,7 @@ package edu.kit.datamanager.indexer.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidatorContext;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
