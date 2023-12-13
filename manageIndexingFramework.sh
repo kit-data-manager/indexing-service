@@ -84,7 +84,7 @@ printInfo "Setup Test Framework"
 
 #echo "Start elasticsearch server..."
 deleteDockerContainer $DOCKER_ELASTIC_TEST
-docker run -d --name $DOCKER_ELASTIC_TEST  -p 41200:9200 -p 41300:9300 -e "discovery.type=single-node" elasticsearch:7.9.3
+docker run -d --name $DOCKER_ELASTIC_TEST  -p 41200:9200 -p 41300:9300 -e "discovery.type=single-node" -e "xpack.security.enabled=false" elasticsearch:8.11.1
 
 echo "Wait until server is up and running. This may last some seconds..."
 wget localhost:41200 -q -o /dev/null -O /dev/null
