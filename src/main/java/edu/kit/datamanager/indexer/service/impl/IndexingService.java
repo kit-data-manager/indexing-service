@@ -20,9 +20,6 @@ import com.google.gson.JsonObject;
 import edu.kit.datamanager.indexer.configuration.ApplicationProperties;
 import edu.kit.datamanager.indexer.exception.IndexerException;
 import edu.kit.datamanager.indexer.util.ElasticsearchUtil;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +54,7 @@ public class IndexingService {
   /**
    * Logger for this class.
    */
-  private final static Logger LOGGER = LoggerFactory.getLogger(IndexingService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(IndexingService.class);
 
   /**
    * Constructor
@@ -91,11 +88,11 @@ public class IndexingService {
    *
    * @param jsonDocument JSON document
    * @param index index of the document (one index per schema)
-   * @param document_id id of the document
+   * @param documentId id of the document
    * @return
    */
-  public boolean uploadToElastic(String jsonDocument, String index, String document_id) {
-    return uploadToElastic(jsonDocument, index, "_doc", document_id);
+  public boolean uploadToElastic(String jsonDocument, String index, String documentId) {
+    return uploadToElastic(jsonDocument, index, "_doc", documentId);
   }
 
   /**
@@ -104,20 +101,20 @@ public class IndexingService {
    * @param jsonDocument JSON document
    * @param index index of the document (one index per schema)
    * @param type type of the document
-   * @param document_id id of the document
+   * @param documentId id of the document
    * @return
    */
-  public boolean uploadToElastic(String jsonDocument, String index, String type, String document_id) {
+  public boolean uploadToElastic(String jsonDocument, String index, String type, String documentId) {
     String ingestUrl = String.format("%s/%s/%s/{id}", baseUrl, index, type);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
-    HttpEntity<String> entity = new HttpEntity<String>(jsonDocument, headers);
+    HttpEntity<String> entity = new HttpEntity<>(jsonDocument, headers);
     try {
-      ResponseEntity<String> response = restTemplate.exchange(ingestUrl,
+      restTemplate.exchange(ingestUrl,
               HttpMethod.PUT,
               entity,
               String.class,
-              document_id);
+              documentId);
     } catch (Exception e) {
       LOGGER.error("Could not send to url", e);
       return false;
@@ -130,11 +127,11 @@ public class IndexingService {
    * document_id will be urlencoded before get is executed.
    *
    * @param index index of the document
-   * @param document_id id of the document
+   * @param documentId id of the document
    * @return response from server.
    */
-  public ResponseEntity<String> getFromElastic(String index, String document_id) {
-    return getFromElastic(index, "_doc", document_id);
+  public ResponseEntity<String> getFromElastic(String index, String documentId) {
+    return getFromElastic(index, "_doc", documentId);
   }
 
   /**
@@ -143,14 +140,14 @@ public class IndexingService {
    *
    * @param index index of the document
    * @param type type of the document
-   * @param document_id id of the document
+   * @param documentId id of the document
    * @return response from server.
    */
-  public ResponseEntity<String> getFromElastic(String index, String type, String document_id) {
+  public ResponseEntity<String> getFromElastic(String index, String type, String documentId) {
     String accessUrl = String.format("%s/%s/%s/{id}", baseUrl, index, type);
     ResponseEntity<String> entity = restTemplate.getForEntity(accessUrl,
             String.class,
-            document_id);
+            documentId);
     LOGGER.trace("Status code value: " + entity.getStatusCodeValue());
     LOGGER.trace("HTTP Header 'ContentType': " + entity.getHeaders().getContentType());
     return entity;
@@ -171,36 +168,4 @@ public class IndexingService {
     }
     return jsonDocument;
   }
-
-  /**
-   * Encode string for URL.
-   *
-   * @param forbiddenString String to encode.
-   * @return encoded string.
-   */
-  private String urlEncode(String forbiddenString) {
-    String encodedString = forbiddenString;
-    try {
-      encodedString = URLEncoder.encode(forbiddenString, StandardCharsets.UTF_8.toString());
-    } catch (UnsupportedEncodingException ex) {
-      LOGGER.error(null, ex);
-    }
-    return encodedString;
-  }
-
-//  /**
-//   * Decode string from URL
-//   *
-//   * @param urlEncodedString String to decode.
-//   * @return decoded string.
-//   */
-//  private String urlDecode(String urlEncodedString) {
-//    String decodedString = urlEncodedString;
-//    try {
-//      decodedString = URLDecoder.decode(urlEncodedString, StandardCharsets.UTF_8.toString());
-//    } catch (UnsupportedEncodingException ex) {
-//      LOGGER.error(null, ex);
-//    }
-//    return decodedString;
-//  }
 }

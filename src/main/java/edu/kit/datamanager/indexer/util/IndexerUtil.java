@@ -55,7 +55,7 @@ public class IndexerUtil {
 
   private static final int MAX_LENGTH_OF_HEADER = 100;
 
-  private static final Pattern JSON_FIRST_BYTE = Pattern.compile("(\\R\\s)*\\s*\\{\\s*\"(.|\\s)*", Pattern.MULTILINE);//^\\s{\\s*\".*");
+  private static final Pattern JSON_FIRST_BYTE = Pattern.compile("(\\R\\s)*\\s*\\{\\s*\"(.|\\s)*", Pattern.MULTILINE);//^\\s{\\s*\".*")
   private static final Pattern XML_FIRST_BYTE = Pattern.compile("((.|\\s)*<\\?xml[^<]*)?\\s*<\\s*(\\w+:)?\\w+(.|\\s)*", Pattern.MULTILINE);
 
   /**
@@ -68,14 +68,15 @@ public class IndexerUtil {
   public static Optional<Path> downloadResource(URI resourceURL) {
     return downloadResource(resourceURL, null);
   }
+
   public static void main(String[] args) throws URISyntaxException {
     String content = "leer";
     URI resourceURL = new URI("http://localhost:8040/api/v1/metadata/46e23f6c-fd41-45b3-adf1-d245faa5bf4d?version=2");
-         if (resourceURL.getHost() != null) {
-          SimpleServiceClient ssc = SimpleServiceClient.create(resourceURL.toString());
-          content = ssc.getResource(String.class);
-        }  
-         System.out.println(content);
+    if (resourceURL.getHost() != null) {
+      SimpleServiceClient ssc = SimpleServiceClient.create(resourceURL.toString());
+      content = ssc.getResource(String.class);
+    }
+    LOGGER.info(content);
   }
 
   /**
@@ -83,7 +84,8 @@ public class IndexerUtil {
    * local disc. You should delete or move to another location afterwards.
    *
    * @param resourceURL the given URI
-   * @param tokenHandler Holding information for creating tokens for authorization.
+   * @param tokenHandler Holding information for creating tokens for
+   * authorization.
    * @return the path to the created file.
    */
   public static Optional<Path> downloadResource(URI resourceURL, TokenUtil tokenHandler) {
@@ -134,12 +136,11 @@ public class IndexerUtil {
       if ((pathToFile != null) && (pathToFile.toFile().exists())) {
         String contentOfFile = FileUtils.readFileToString(pathToFile.toFile(), StandardCharsets.UTF_8);
         String newExtension = guessFileExtension(contentOfFile.getBytes());
-        if (newExtension != null) {
-          if (!pathToFile.toString().endsWith(newExtension)) {
-            renamedFile = Paths.get(pathToFile.toString() + newExtension);
-            FileUtils.moveFile(pathToFile.toFile(), renamedFile.toFile());
-            returnFile = renamedFile;
-          }
+        if ((newExtension != null)
+                && (!pathToFile.toString().endsWith(newExtension))) {
+          renamedFile = Paths.get(pathToFile.toString() + newExtension);
+          FileUtils.moveFile(pathToFile.toFile(), renamedFile.toFile());
+          returnFile = renamedFile;
         }
       }
     } catch (IOException ex) {
@@ -180,7 +181,6 @@ public class IndexerUtil {
     } catch (IOException ioe) {
       throw new IndexerException("Error removing file '" + tempFile.toString() + "'!", ioe);
     }
-    return;
   }
 
   private static String guessFileExtension(byte[] schema) {

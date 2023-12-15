@@ -26,6 +26,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "edu.kit.datamanager.indexer")
 @EntityScan(basePackages = {"edu.kit.datamanager.indexer.domain"})
-public class JPAPersistenceConfig{
+public class JPAPersistenceConfig {
 
 }

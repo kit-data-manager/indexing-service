@@ -30,7 +30,11 @@ public class ElasticsearchUtil {
   /**
    * Logger for this class.
    */
-  private final static Logger LOGGER = LoggerFactory.getLogger(ElasticsearchUtil.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchUtil.class);
+
+  private ElasticsearchUtil() {
+    throw new IllegalStateException("Utility class");
+  }
 
   /**
    * Test URL for pointing to a running elasticsearch instance.
