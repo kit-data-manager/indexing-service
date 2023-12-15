@@ -72,7 +72,7 @@ docker run -d --net $DOCKER_NETWORK --name $DOCKER_ELASTIC  -p 9200:9200 -p 9300
 
 echo "Start Indexing-Service..."
 deleteDockerContainer $DOCKER_INDEXING
-docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/indexing-service/config --net $DOCKER_NETWORK --name $DOCKER_INDEXING  -p 8050:8050 indexing-service:latest
+docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/indexing-service/config --net $DOCKER_NETWORK --name $DOCKER_INDEXING  -p 8050:8050 kitdm/indexing-service:latest
 
 #printInfo "Ready to use metastore"
 }

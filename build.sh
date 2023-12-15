@@ -134,7 +134,7 @@ done < "$INSTALLATION_DIRECTORY"/application.properties.temp > "$INSTALLATION_DI
 rm "$INSTALLATION_DIRECTORY"/application.properties.temp
 
 echo "Copy jar file to '$INSTALLATION_DIRECTORY'..."
-find . -name "$REPO_NAME*.jar" -exec cp '{}' "$INSTALLATION_DIRECTORY" \;
+find ./build/libs/. -name "$REPO_NAME*.jar" -exec cp '{}' "$INSTALLATION_DIRECTORY" \;
 
 echo "Create config directory"
 mkdir "$INSTALLATION_DIRECTORY"/config
