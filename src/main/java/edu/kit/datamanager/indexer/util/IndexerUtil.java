@@ -16,9 +16,7 @@
 package edu.kit.datamanager.indexer.util;
 
 import edu.kit.datamanager.clients.SimpleServiceClient;
-import edu.kit.datamanager.entities.RepoServiceRole;
 import edu.kit.datamanager.indexer.exception.IndexerException;
-import edu.kit.datamanager.util.JwtBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -58,7 +56,11 @@ public class IndexerUtil {
   private static final Pattern JSON_FIRST_BYTE = Pattern.compile("(\\R\\s)*\\s*\\{\\s*\"(.|\\s)*", Pattern.MULTILINE);//^\\s{\\s*\".*")
   private static final Pattern XML_FIRST_BYTE = Pattern.compile("((.|\\s)*<\\?xml[^<]*)?\\s*<\\s*(\\w+:)?\\w+(.|\\s)*", Pattern.MULTILINE);
 
-  /**
+  
+  private IndexerUtil() {
+    throw new IllegalStateException("Utility class");
+  }
+/**
    * Downloads or copy the file behind the given URI and returns its path on
    * local disc. You should delete or move to another location afterwards.
    *
@@ -67,16 +69,6 @@ public class IndexerUtil {
    */
   public static Optional<Path> downloadResource(URI resourceURL) {
     return downloadResource(resourceURL, null);
-  }
-
-  public static void main(String[] args) throws URISyntaxException {
-    String content = "leer";
-    URI resourceURL = new URI("http://localhost:8040/api/v1/metadata/46e23f6c-fd41-45b3-adf1-d245faa5bf4d?version=2");
-    if (resourceURL.getHost() != null) {
-      SimpleServiceClient ssc = SimpleServiceClient.create(resourceURL.toString());
-      content = ssc.getResource(String.class);
-    }
-    LOGGER.info(content);
   }
 
   /**

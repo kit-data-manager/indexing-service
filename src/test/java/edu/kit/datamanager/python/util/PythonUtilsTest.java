@@ -15,11 +15,13 @@
  */
 package edu.kit.datamanager.python.util;
 
+import edu.kit.datamanager.indexer.util.IndexerUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -77,10 +79,15 @@ public class PythonUtilsTest {
    */
   @Test
   public void testRun_Constructor() throws Throwable {
+    System.out.println("Test constructor");
     Constructor<PythonUtils> c = PythonUtils.class.getDeclaredConstructor();
     c.setAccessible(true);
-    PythonUtils pu = c.newInstance(); // Hello sailor
-    assertNotNull(pu);
+    try {
+      PythonUtils iu = c.newInstance();
+      assertTrue(false);
+    } catch (InvocationTargetException ite) {
+      assertTrue(true);
+    }
   }
 
   /**

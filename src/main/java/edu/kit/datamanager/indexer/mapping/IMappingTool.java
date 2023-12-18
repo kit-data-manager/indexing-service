@@ -38,7 +38,7 @@ public interface IMappingTool {
   /**
    * Map holding all mapping tools.
    */
-  static public Map<Mapping, IMappingTool> toolMapper = new HashMap<>();
+  public static Map<Mapping, IMappingTool> toolMapper = new HashMap<>();
 
   /**
    * Get mapping tool for give mapping.

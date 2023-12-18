@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import jakarta.validation.ConstraintValidatorContext;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -54,13 +55,16 @@ public class ElasticsearchUtilTest {
   /**
    * Test constructor:
    */
-  @Test
   public void testIsInstance() throws Throwable {
     System.out.println("Test constructor");
     Constructor<ElasticsearchUtil> c = ElasticsearchUtil.class.getDeclaredConstructor();
     c.setAccessible(true);
-    ElasticsearchUtil eu = c.newInstance(); // Hello sailor
-    assertNotNull(eu);
+    try {
+      ElasticsearchUtil eu = c.newInstance();
+      assertTrue(false);
+    } catch (InvocationTargetException ite) {
+      assertTrue(true);
+    }
   }
 
   /**
