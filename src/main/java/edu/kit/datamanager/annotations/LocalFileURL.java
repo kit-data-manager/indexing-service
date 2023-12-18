@@ -32,7 +32,7 @@ import jakarta.validation.Payload;
 @Retention(RUNTIME)
 @Constraint(validatedBy = LocalFileValidator.class)
 @Documented
-public @interface LocalFileURL{
+public @interface LocalFileURL {
 
   String message() default "Provided file URL invalid. A valid URL to a local file is required.";
 

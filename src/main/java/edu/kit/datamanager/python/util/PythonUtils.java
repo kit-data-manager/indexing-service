@@ -16,12 +16,10 @@
 package edu.kit.datamanager.python.util;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,9 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +56,11 @@ public class PythonUtils {
   /**
    * Logger for this class.
    */
-  private final static Logger LOGGER = LoggerFactory.getLogger(PythonUtils.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PythonUtils.class);
+
+  private PythonUtils() {
+    throw new IllegalStateException("Utility class");
+  }
 
   /**
    * Run the script at 'scriptLocation' with 'arguments' using the Python

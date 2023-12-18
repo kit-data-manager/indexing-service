@@ -68,6 +68,8 @@ public class MappingController implements IMappingController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MappingController.class);
 
+  private static final String RETURN_BAD_REQUEST = "Returning HTTP BAD_REQUEST.";
+
   @Autowired
   private ApplicationProperties indexerProperties;
   @Autowired
@@ -78,27 +80,27 @@ public class MappingController implements IMappingController {
 
   @Override
   public ResponseEntity createMapping(
-          @RequestPart(name = "record") final MultipartFile record,
+          @RequestPart(name = "record") final MultipartFile record4Mapping,
           @RequestPart(name = "document") final MultipartFile document,
           HttpServletRequest request,
           HttpServletResponse response,
           UriComponentsBuilder uriBuilder) throws URISyntaxException {
 
-    LOG.trace("Performing createRecord({},...).", record);
+    LOG.trace("Performing createRecord({},...).", record4Mapping);
 
     MappingRecord recordDocument;
     try {
-      if (record == null || record.isEmpty()) {
+      if (record4Mapping == null || record4Mapping.isEmpty()) {
         throw new IOException();
       }
-      recordDocument = Json.mapper().readValue(record.getInputStream(), MappingRecord.class);
+      recordDocument = Json.mapper().readValue(record4Mapping.getInputStream(), MappingRecord.class);
     } catch (IOException ex) {
       LOG.error("No metadata record provided. Returning HTTP BAD_REQUEST.");
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No mapping record provided.");
     }
     if ((recordDocument.getMappingId() == null) || (recordDocument.getMappingType() == null)) {
       String message = "Mandatory attribute mappingId and/or mappingType not found in record. ";
-      LOG.error(message + "Returning HTTP BAD_REQUEST.");
+      LOG.error(message + RETURN_BAD_REQUEST);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
@@ -168,14 +170,14 @@ public class MappingController implements IMappingController {
           HttpServletResponse hsr
   ) {
     LOG.trace("Performing getMappingById({}, {}).", mappingId, mappingType);
-    MappingRecord record = getMappingById(mappingId, mappingType);
+    MappingRecord record4Mapping = getMappingById(mappingId, mappingType);
     //if security enabled, check permission -> if not matching, return HTTP UNAUTHORIZED or FORBIDDEN
     LOG.trace("Get ETag of MappingRecord.");
-    String etag = record.getEtag();
+    String etag = record4Mapping.getEtag();
 
-    fixMappingDocumentUri(record);
+    fixMappingDocumentUri(record4Mapping);
     LOG.trace("Document URI successfully updated. Returning result.");
-    return ResponseEntity.ok().eTag("\"" + etag + "\"").body(record);
+    return ResponseEntity.ok().eTag("\"" + etag + "\"").body(record4Mapping);
   }
 
   @Override
@@ -188,9 +190,9 @@ public class MappingController implements IMappingController {
     LOG.trace("Performing getMappingDocumentById({}, {}).", mappingId, mappingType);
 
     LOG.trace("Obtaining mapping record with id {}/{}.", mappingId, mappingType);
-    MappingRecord record = getMappingById(mappingId, mappingType);
+    MappingRecord record4Mapping = getMappingById(mappingId, mappingType);
 
-    URI mappingDocumentUri = Paths.get(record.getMappingDocumentUri()).toUri();
+    URI mappingDocumentUri = Paths.get(record4Mapping.getMappingDocumentUri()).toUri();
 
     Path metadataDocumentPath = Paths.get(mappingDocumentUri);
     if (!Files.exists(metadataDocumentPath) || !Files.isRegularFile(metadataDocumentPath) || !Files.isReadable(metadataDocumentPath)) {
@@ -226,9 +228,7 @@ public class MappingController implements IMappingController {
     LOG.trace("Cleaning up schemaDocumentUri of query result.");
     List<MappingRecord> recordList = records.getContent();
 
-    recordList.forEach((record) -> {
-      fixMappingDocumentUri(record);
-    });
+    recordList.forEach(recordItem -> fixMappingDocumentUri(recordItem));
 
     String contentRange = ControllerUtils.getContentRangeHeader(pgbl.getPageNumber(), pgbl.getPageSize(), records.getTotalElements());
 
@@ -239,34 +239,34 @@ public class MappingController implements IMappingController {
   public ResponseEntity updateMapping(
           @PathVariable(value = "mappingId", required = true) String mappingId,
           @PathVariable(value = "mappingType", required = true) String mappingType,
-          @RequestPart(name = "record", required = false) MultipartFile record,
+          @RequestPart(name = "record", required = false) MultipartFile record4Mapping,
           @RequestPart(name = "document", required = false)
           final MultipartFile document,
           WebRequest request,
           HttpServletResponse response,
           UriComponentsBuilder uriBuilder
   ) {
-    LOG.trace("Performing updateMapping().", record);
+    LOG.trace("Performing updateMapping().", record4Mapping);
 
     MappingRecord recordDocument;
     try {
-      if (record == null || record.isEmpty()) {
+      if (record4Mapping == null || record4Mapping.isEmpty()) {
         throw new IOException();
       }
-      recordDocument = Json.mapper().readValue(record.getInputStream(), MappingRecord.class);
+      recordDocument = Json.mapper().readValue(record4Mapping.getInputStream(), MappingRecord.class);
     } catch (IOException ex) {
       LOG.error("No metadata record provided. Returning HTTP BAD_REQUEST.");
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No mapping record provided.");
     }
     if ((recordDocument.getMappingId() == null) || (recordDocument.getMappingType() == null)) {
       String message = "Mandatory attribute mappingId and/or mappingType not found in record. ";
-      LOG.error(message + "Returning HTTP BAD_REQUEST.");
+      LOG.error(message + RETURN_BAD_REQUEST);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
     if ((!recordDocument.getMappingId().equals(mappingId)) || (!recordDocument.getMappingType().equals(mappingType))) {
       String message = "Mandatory attribute mappingId and/or mappingType are not identical to path parameters. "
               + " (" + recordDocument.getMappingId() + "<-->" + mappingId + ", " + recordDocument.getMappingType() + "<-->" + mappingType + ")";
-      LOG.error(message + "Returning HTTP BAD_REQUEST.");
+      LOG.error(message + RETURN_BAD_REQUEST);
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 
     }
@@ -329,11 +329,6 @@ public class MappingController implements IMappingController {
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
-//
-//  @Bean
-//  public RestTemplate restTemplate() {
-//    return new RestTemplate();
-//  }
 
   /**
    * Get the record of given id / type.
@@ -346,28 +341,24 @@ public class MappingController implements IMappingController {
   private MappingRecord getMappingById(String mappingId, String mappingType) throws ResourceNotFoundException {
     //if security enabled, check permission -> if not matching, return HTTP UNAUTHORIZED or FORBIDDEN
     LOG.trace("Reading mapping record from database.");
-    Optional<MappingRecord> record = mappingRecordDao.findByMappingIdAndMappingType(mappingId, mappingType);
-    if (!record.isPresent()) {
+    Optional<MappingRecord> record4Mapping = mappingRecordDao.findByMappingIdAndMappingType(mappingId, mappingType);
+    if (!record4Mapping.isPresent()) {
       String message = String.format("No mapping record found for mapping %s/%s. Returning HTTP 404.", mappingId, mappingType);
       LOG.error(message);
       throw new ResourceNotFoundException(message);
     }
-    return record.get();
+    return record4Mapping.get();
   }
 
   public MappingRecord mergeRecords(MappingRecord managed, MappingRecord provided) {
-    if (provided != null) {
-
-      //update acl
-      if (provided.getAcl() != null) {
-        LOG.trace("Updating record acl from {} to {}.", managed.getAcl(), provided.getAcl());
-        managed.setAcl(provided.getAcl());
-      }
+    if ((provided != null) && (provided.getAcl() != null)) {
+      LOG.trace("Updating record acl from {} to {}.", managed.getAcl(), provided.getAcl());
+      managed.setAcl(provided.getAcl());
     }
     return managed;
   }
 
-  private void fixMappingDocumentUri(MappingRecord record) {
-    record.setMappingDocumentUri(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getMappingDocumentById(record.getMappingId(), record.getMappingType(), null, null)).toUri().toString());
+  private void fixMappingDocumentUri(MappingRecord record4Mapping) {
+    record4Mapping.setMappingDocumentUri(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getMappingDocumentById(record4Mapping.getMappingId(), record4Mapping.getMappingType(), null, null)).toUri().toString());
   }
 }

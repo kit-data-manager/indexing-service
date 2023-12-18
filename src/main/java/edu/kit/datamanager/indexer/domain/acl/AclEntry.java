@@ -35,12 +35,12 @@ import lombok.Data;
 @Entity
 @Table(name = "indexer_acl")
 @Data
-public class AclEntry{
+public class AclEntry {
 
-  public AclEntry(){
+  public AclEntry() {
   }
 
-  public AclEntry(String identifier, PERMISSION permission){
+  public AclEntry(String identifier, PERMISSION permission) {
     this();
     this.sid = identifier;
     this.permission = permission;
@@ -57,7 +57,7 @@ public class AclEntry{
   private PERMISSION permission;
 
   @Override
-  public int hashCode(){
+  public int hashCode() {
     int hash = 7;
     hash = 89 * hash + Objects.hashCode(this.id);
     hash = 89 * hash + Objects.hashCode(this.sid);
@@ -66,21 +66,21 @@ public class AclEntry{
   }
 
   @Override
-  public boolean equals(Object obj){
-    if(this == obj){
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if(obj == null){
+    if (obj == null) {
       return false;
     }
-    if(getClass() != obj.getClass()){
+    if (getClass() != obj.getClass()) {
       return false;
     }
     final AclEntry other = (AclEntry) obj;
-    if(!Objects.equals(this.id, other.id)){
+    if (!Objects.equals(this.id, other.id)) {
       return false;
     }
-    if(!Objects.equals(this.sid, other.sid)){
+    if (!Objects.equals(this.sid, other.sid)) {
       return false;
     }
     return EnumUtils.equals(this.permission, other.permission);

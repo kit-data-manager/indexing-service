@@ -32,7 +32,7 @@ import jakarta.validation.Payload;
 @Retention(RUNTIME)
 @Constraint(validatedBy = ElasticsearchIndexValidator.class)
 @Documented
-public @interface ElasticsearchIndex{
+public @interface ElasticsearchIndex {
 
   String message() default "Provided elasticsearch URL invalid. A valid URL to a running elasticsearch server instance is required. (e.g.: http://localhost:9200)";
 

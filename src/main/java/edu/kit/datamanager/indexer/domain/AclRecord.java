@@ -16,7 +16,6 @@
 package edu.kit.datamanager.indexer.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import edu.kit.datamanager.entities.PERMISSION;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,13 +32,13 @@ import org.springframework.http.MediaType;
 @Data
 public class AclRecord implements Serializable {
 
-  public final static String RESOURCE_TYPE = "application/vnd.datamanager.acl+json";
+  public static final String RESOURCE_TYPE = "application/vnd.datamanager.acl+json";
 
-  public final static MediaType ACL_RECORD_MEDIA_TYPE = MediaType.valueOf(RESOURCE_TYPE);
+  public static final MediaType ACL_RECORD_MEDIA_TYPE = MediaType.valueOf(RESOURCE_TYPE);
 
-  public final static String METADATA_RECORD_TYPE = "application/vnd.datamanager.metadata-record+json";
+  public static final String METADATA_RECORD_TYPE = "application/vnd.datamanager.metadata-record+json";
 
-  public final static MediaType METADATA_RECORD_MEDIA_TYPE = MediaType.valueOf(METADATA_RECORD_TYPE);
+  public static final MediaType METADATA_RECORD_MEDIA_TYPE = MediaType.valueOf(METADATA_RECORD_TYPE);
 
   @NotNull(message = "A list of access control entries for resticting access for READ.")
   @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)

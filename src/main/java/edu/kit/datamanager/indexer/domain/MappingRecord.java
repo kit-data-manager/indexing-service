@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.kit.datamanager.entities.EtagSupport;
 import edu.kit.datamanager.indexer.domain.acl.AclEntry;
 import java.io.Serializable;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.Entity;
@@ -42,7 +40,8 @@ import org.springframework.http.MediaType;
 @IdClass(CompositeKey.class)
 @Data
 public class MappingRecord implements EtagSupport, Serializable {
-  public final static MediaType MAPPING_RECORD_MEDIA_TYPE = MediaType.valueOf("application/vnd.datamanager.mapping-record+json");
+
+  public static final MediaType MAPPING_RECORD_MEDIA_TYPE = MediaType.valueOf("application/vnd.datamanager.mapping-record+json");
 
   @Id
   @NotBlank(message = "The unique identify of the record.")
@@ -52,7 +51,7 @@ public class MappingRecord implements EtagSupport, Serializable {
   private String mappingType;
   @NotNull(message = "A list of access control entries for resticting access.")
   @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
-   private final Set<AclEntry> acl = new HashSet<>();
+  private final Set<AclEntry> acl = new HashSet<>();
   @NotBlank(message = "The metadata document uri, e.g. pointing to a local file.")
   private String mappingDocumentUri;
   @NotBlank(message = "The SHA-1 hash of the associated metadata file. The hash is used for comparison while updating.")
@@ -60,6 +59,7 @@ public class MappingRecord implements EtagSupport, Serializable {
 
   /**
    * Set new access control list.
+   *
    * @param newAclList new list with acls.
    */
   public void setAcl(Set<AclEntry> newAclList) {

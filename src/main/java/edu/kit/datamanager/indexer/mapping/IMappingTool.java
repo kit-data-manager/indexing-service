@@ -33,7 +33,7 @@ public interface IMappingTool {
   /**
    * Logger for this class.
    */
-  final static Logger LOG = LoggerFactory.getLogger(IMappingTool.class);
+  static final Logger LOG = LoggerFactory.getLogger(IMappingTool.class);
 
   /**
    * Map holding all mapping tools.

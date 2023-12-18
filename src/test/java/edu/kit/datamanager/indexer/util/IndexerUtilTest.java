@@ -19,6 +19,8 @@ import com.google.common.io.Files;
 import edu.kit.datamanager.indexer.exception.IndexerException;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -37,7 +39,7 @@ import static org.junit.Assert.*;
  * @author hartmann-v
  */
 public class IndexerUtilTest {
-  
+
   TokenUtil tokenUtil = new TokenUtil(null);
 
   public IndexerUtilTest() {
@@ -60,12 +62,27 @@ public class IndexerUtilTest {
   }
 
   /**
+   * Test constructor:
+   */
+  @Test
+  public void testIsInstance() throws Throwable {
+    System.out.println("Test constructor");
+    Constructor<IndexerUtil> c = IndexerUtil.class.getDeclaredConstructor();
+    c.setAccessible(true);
+    try {
+      IndexerUtil iu = c.newInstance();
+      assertTrue(false);
+    } catch (InvocationTargetException ite) {
+      assertTrue(true);
+    }
+  }
+
+  /**
    * Test of downloadResource method, of class GemmaMapping.
    */
   @Test
   public void testDownloadResource() throws URISyntaxException {
     System.out.println("downloadResource");
-    assertNotNull(new IndexerUtil());
     URI resourceURL = new URI("https://www.example.org");
     Optional<Path> result = IndexerUtil.downloadResource(resourceURL);
     assertTrue("No file available!", result.isPresent());
@@ -80,7 +97,6 @@ public class IndexerUtilTest {
   @Test
   public void testDownloadResourceWithPath() throws URISyntaxException {
     System.out.println("downloadResource");
-    assertNotNull(new IndexerUtil());
     URI resourceURL = new URI("https://www.example.org/index.html");
     Optional<Path> result = IndexerUtil.downloadResource(resourceURL);
     assertTrue("No file available!", result.isPresent());

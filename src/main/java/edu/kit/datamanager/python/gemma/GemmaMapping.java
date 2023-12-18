@@ -21,9 +21,7 @@ import edu.kit.datamanager.python.util.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +30,11 @@ import org.slf4j.LoggerFactory;
  */
 public class GemmaMapping implements IMappingTool {
 
-  /** Logger for this class.
+  /**
+   * Logger for this class.
    */
-  private final static Logger LOGGER = LoggerFactory.getLogger(GemmaMapping.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GemmaMapping.class);
 
-  
   GemmaConfiguration gemmaConfiguration;
 
   public GemmaMapping(ApplicationProperties configuration) throws URISyntaxException, MalformedURLException {
@@ -53,13 +51,12 @@ public class GemmaMapping implements IMappingTool {
    * @param mappingFile The absolute path to mapping file.
    * @param srcFile The absolute path to the source file.
    * @param resultFile The absolute path to the created mapping.
-    *
+   *
    * @return Errorcode (0 = SUCCESS)
    * @see edu.kit.datamanager.python.util.PythonUtils
    */
-  public int mapFile(Path mappingFile, Path srcFile, Path resultFile){
+  public int mapFile(Path mappingFile, Path srcFile, Path resultFile) {
     LOGGER.trace("Run gemma on '{}' with mapping '{}' -> '{}'", srcFile, mappingFile, resultFile);
-     int returnCode = PythonUtils.run(gemmaConfiguration.getPythonLocation().getPath(), gemmaConfiguration.getGemmaLocation().getPath(), mappingFile.toAbsolutePath().toString(), srcFile.toAbsolutePath().toString(), resultFile.toAbsolutePath().toString());
-   return returnCode;
+    return PythonUtils.run(gemmaConfiguration.getPythonLocation().getPath(), gemmaConfiguration.getGemmaLocation().getPath(), mappingFile.toAbsolutePath().toString(), srcFile.toAbsolutePath().toString(), resultFile.toAbsolutePath().toString());
   }
 }

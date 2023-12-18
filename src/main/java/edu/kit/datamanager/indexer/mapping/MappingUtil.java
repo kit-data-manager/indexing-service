@@ -38,7 +38,7 @@ public class MappingUtil {
   /**
    * Logger for this class.
    */
-  private final static Logger LOGGER = LoggerFactory.getLogger(MappingUtil.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MappingUtil.class);
 
   private ApplicationProperties configuration;
 
@@ -64,8 +64,6 @@ public class MappingUtil {
     resultFile = IndexerUtil.createTempFile(mapping + "_", ".mapping");
     try {
       returnCode = mapFile(mappingFile, srcFile, resultFile, mapping);
-    } catch (IndexerException ie) {
-      throw ie;
     } finally {
       if (returnCode != SUCCESS) {
         IndexerUtil.removeFile(resultFile);
