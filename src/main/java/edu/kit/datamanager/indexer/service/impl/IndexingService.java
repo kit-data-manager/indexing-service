@@ -148,7 +148,7 @@ public class IndexingService {
     ResponseEntity<String> entity = restTemplate.getForEntity(accessUrl,
             String.class,
             documentId);
-    LOGGER.trace("Status code value: " + entity.getStatusCodeValue());
+    LOGGER.trace("Status code value: " + entity.getStatusCode().value());
     LOGGER.trace("HTTP Header 'ContentType': " + entity.getHeaders().getContentType());
     return entity;
   }
