@@ -221,7 +221,7 @@ public class MappingService {
       try {
         AclRecord aclRecord;
 
-        aclRecord = getAclRecord(contentUrl, compactToken);
+        aclRecord = getAclRecord(contentUrl, tokenUtil);
         aclRecord.setMetadataDocument(rootNode);
         mapper.writeValue(executeMapping.get().toFile(), aclRecord);
       } catch (IOException ex) {

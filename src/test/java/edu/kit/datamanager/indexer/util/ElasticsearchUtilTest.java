@@ -18,6 +18,7 @@ package edu.kit.datamanager.indexer.util;
 import java.net.MalformedURLException;
 import java.net.URL;
 import jakarta.validation.ConstraintValidatorContext;
+import java.lang.reflect.Constructor;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -54,9 +55,11 @@ public class ElasticsearchUtilTest {
    * Test constructor:
    */
   @Test
-  public void testIsInstance() throws MalformedURLException {
+  public void testIsInstance() throws Throwable {
     System.out.println("Test constructor");
-    ElasticsearchUtil eu = new ElasticsearchUtil();
+    Constructor<ElasticsearchUtil> c = ElasticsearchUtil.class.getDeclaredConstructor();
+    c.setAccessible(true);
+    ElasticsearchUtil eu = c.newInstance(); // Hello sailor
     assertNotNull(eu);
   }
 
