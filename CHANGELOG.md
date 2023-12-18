@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump org.springframework.data:spring-data-elasticsearch from 5.1.2 to 5.2.0
 - Bump org.springframework.restdocs:spring-restdocs-mockmvc from 3.0.0 to 3.0.1
 - Bump springDocVersion from 2.1.0 to 2.3.0
+- Bump elasticsearch instance for test from 7.9.3 to 8.11.1
 
 ### Fixed
 - Settings for health check.
