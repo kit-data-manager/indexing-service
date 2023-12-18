@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 public class ElasticsearchIndexValidator implements ConstraintValidator<ElasticsearchIndex, String> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchIndexValidator.class);
-  
-  public static final String SPECIAL_CHARACTERS = "  \"*\\<|,>/?{}\\[\\]`A-Z";
+
+  public static final String SPECIAL_CHARACTERS = " \"*\\<|,>/?{}\\[\\]`A-Z";
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
@@ -39,7 +39,7 @@ public class ElasticsearchIndexValidator implements ConstraintValidator<Elastics
       LOGGER.error("Provided value is null.");
       return validElasticsearchIndex;
     }
-    // index mustn't contain the following special character;
+    // index mustn't contain the following special character:
     Pattern p = Pattern.compile("[" + SPECIAL_CHARACTERS + "]");
     Matcher m = p.matcher(value);
 

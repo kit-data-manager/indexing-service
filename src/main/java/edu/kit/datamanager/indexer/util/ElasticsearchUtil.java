@@ -30,7 +30,11 @@ public class ElasticsearchUtil {
   /**
    * Logger for this class.
    */
-  private final static Logger LOGGER = LoggerFactory.getLogger(ElasticsearchUtil.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchUtil.class);
+
+  private ElasticsearchUtil() {
+    throw new IllegalStateException("Utility class");
+  }
 
   /**
    * Test URL for pointing to a running elasticsearch instance.
@@ -49,9 +53,9 @@ public class ElasticsearchUtil {
         ResponseEntity<String> entity = restTemplate.getForEntity(accessUrl,
                 String.class,
                 baseUrl);
-        LOGGER.info("Status code value: " + entity.getStatusCodeValue());
+        LOGGER.info("Status code value: " + entity.getStatusCode().value());
         LOGGER.info("HTTP Header 'ContentType': " + entity.getHeaders().getContentType());
-        if (entity.getStatusCodeValue() == HttpStatus.OK.value()) {
+        if (entity.getStatusCode().value() == HttpStatus.OK.value()) {
           LOGGER.trace("Elasticsearch server at '{}' seems to be up and running!", baseUrl);
           validElasticSearchServer = true;
         }

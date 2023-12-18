@@ -25,9 +25,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class GemmaConfiguration {
- /**
-  * Absolute path to python executable.
-  */
+
+  /**
+   * Absolute path to python executable.
+   */
   private URL pythonLocation;
   /**
    * Absolute path to gemma script.

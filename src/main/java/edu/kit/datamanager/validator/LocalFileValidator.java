@@ -26,7 +26,7 @@ import java.io.File;
 /**
  *
  */
-public class LocalFileValidator implements ConstraintValidator<LocalFileURL, java.net.URL>{
+public class LocalFileValidator implements ConstraintValidator<LocalFileURL, java.net.URL> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LocalFileValidator.class);
 

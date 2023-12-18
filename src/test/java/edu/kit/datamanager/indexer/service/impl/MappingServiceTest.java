@@ -505,7 +505,7 @@ public class MappingServiceTest {
     mappingRepo.save(mappingRecord);
     File srcFile = new File("src/test/resources/examples/gemma/simple.json");
     URI contentUrl = srcFile.toURI();
-    String expectedResult = FileUtils.readFileToString(new File("src/test/resources/result/gemma/extended.simple.elastic.json"), StandardCharsets.UTF_8);
+    String expectedResult = FileUtils.readFileToString(new File("src/test/resources/result/gemma/simple.elastic.json"), StandardCharsets.UTF_8);
     List<Path> resultPath = mappingService4Test.executeMapping(contentUrl, mappingId);
     assertTrue("Result available", !resultPath.isEmpty());
     assertEquals("No of result files: ", 1, resultPath.size());

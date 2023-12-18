@@ -32,7 +32,7 @@ import jakarta.validation.Payload;
 @Retention(RUNTIME)
 @Constraint(validatedBy = ExecutableFileValidator.class)
 @Documented
-public @interface ExecutableFileURL{
+public @interface ExecutableFileURL {
 
   String message() default "Provided file URL invalid. A valid URL to a local file is required.";
 

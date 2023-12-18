@@ -24,17 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.jknack.handlebars.Handlebars;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import edu.kit.datamanager.clients.SimpleServiceClient;
 import edu.kit.datamanager.indexer.configuration.ApplicationProperties;
 import edu.kit.datamanager.indexer.exception.IndexerException;
 import edu.kit.datamanager.indexer.service.impl.IndexingService;
 import edu.kit.datamanager.indexer.service.impl.MappingService;
 import edu.kit.datamanager.indexer.util.ElasticsearchUtil;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -52,7 +47,7 @@ public class MetastoreMessageHandler implements IMessageHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(MetastoreMessageHandler.class);
 
-  public final static String RESOURCE_TYPE = "application/vnd.datamanager.metadata-record+json";
+  public static final String RESOURCE_TYPE = "application/vnd.datamanager.metadata-record+json";
 
   private Handlebars hb;
 
@@ -93,7 +88,7 @@ public class MetastoreMessageHandler implements IMessageHandler {
       LOG.debug("Reject message: Not addressed correctly!");
       return RESULT.REJECTED;
     }
-    String schemaId = mappingId;
+
     int beginIndex = mappingId.indexOf(MAPPING_URL_APPENDIX);
     int endIndex = mappingId.indexOf("?", beginIndex);
     if (beginIndex > 0) {
@@ -104,10 +99,10 @@ public class MetastoreMessageHandler implements IMessageHandler {
     if (endIndex < 0) {
       endIndex = mappingId.length();
     }
-    schemaId = mappingId.substring(beginIndex, endIndex);
+    String schemaId = mappingId.substring(beginIndex, endIndex);
     LOG.trace("Strip mappingId to id only...");
     mappingId = mappingId.substring(beginIndex);
-    mappingId = mappingId.replaceAll("=", "_");
+    mappingId = mappingId.replace("=", "_");
     LOG.trace("New mappingId: '{}'", mappingId);
     LOG.trace("SchemaId: '{}'", schemaId);
 
@@ -124,10 +119,11 @@ public class MetastoreMessageHandler implements IMessageHandler {
       resultPath = pathWithAllMappings.get(0);
       // Prefix index with configured value. (default: metastore-
       String index = properties.getElasticsearchIndex() + schemaId;
-//      String index = ElasticsearchUtil.testForValidIndex(mappingId);
-//      if (!index.equals(mappingId)) {
-//        LOG.warn("MappingId '{}' was transformed to '{}' due to restrictions of elasticsearch!", mappingId, index);
-//      }
+      String newIndex = ElasticsearchUtil.testForValidIndex(index);
+      if (!index.equals(newIndex)) {
+        LOG.warn("The index for elasticsearch '{}' was transformed to '{}' due to restrictions of elasticsearch!", index, newIndex);
+        index = newIndex;
+      }
 
       String jsonDocument = FileUtils.readFileToString(resultPath.toFile(), StandardCharsets.UTF_8);
       elasticsearchService.uploadToElastic(jsonDocument, index, properties.getElasticsearchType(), resourceUrlAsString);
@@ -150,7 +146,6 @@ public class MetastoreMessageHandler implements IMessageHandler {
 
   @Override
   public boolean configure() {
-    boolean everythingWorks = true;
-    return everythingWorks;
+    return true;
   }
 }

@@ -61,7 +61,7 @@ public interface IMappingController {
   @RequestMapping(path = "", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   @ResponseBody
   public ResponseEntity<MappingRecord> createMapping(
-          @Parameter(description = "Json representation of the mapping record.", required = true) @RequestPart(name = "record", required = true) final MultipartFile record,
+          @Parameter(description = "Json representation of the mapping record.", required = true) @RequestPart(name = "record", required = true) final MultipartFile record4Mapping,
           @Parameter(description = "The mapping document associated with the record. The document must match the mappingType selected by the record.", required = true) @RequestPart(name = "document", required = true) final MultipartFile document,
           final HttpServletRequest request,
           final HttpServletResponse response,
@@ -127,7 +127,7 @@ public interface IMappingController {
   ResponseEntity<MappingRecord> updateMapping(
           @Parameter(description = "The schema linked to the mapping.", required = true) @PathVariable(value = "mappingId") String mappingId,
           @Parameter(description = "The type of the mapping.", required = true) @PathVariable(value = "mappingType") String mappingType,
-          @Parameter(description = "JSON representation of the metadata record.", required = false) @RequestPart(name = "record", required = true) final MultipartFile record,
+          @Parameter(description = "JSON representation of the metadata record.", required = false) @RequestPart(name = "record", required = true) final MultipartFile record4Mapping,
           @Parameter(description = "The metadata document associated with the record. The document must match the schema defined in the record.", required = false) @RequestPart(name = "document", required = false) final MultipartFile document,
           final WebRequest request,
           final HttpServletResponse response,

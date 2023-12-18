@@ -15,10 +15,13 @@
  */
 package edu.kit.datamanager.python.util;
 
+import edu.kit.datamanager.indexer.util.IndexerUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -29,44 +32,44 @@ import static org.junit.Assert.*;
 /**
  */
 public class PythonUtilsTest {
-  
+
   private static String PYTHON_EXECUTABLE;
 
   public PythonUtilsTest() {
   }
-   
+
   @BeforeClass
   public static void setUpClass() throws IOException {
     // Determine python location
     OutputStream os = new ByteArrayOutputStream();
-    PythonUtils.run("which","python3", os, null);
+    PythonUtils.run("which", "python3", os, null);
     String pythonExecutable = os.toString().trim();
     os.flush();
     if (pythonExecutable.isEmpty()) {
-    PythonUtils.run("which","python", os, null);
-     pythonExecutable = os.toString().trim();
+      PythonUtils.run("which", "python", os, null);
+      pythonExecutable = os.toString().trim();
     }
-    if (pythonExecutable.isEmpty()) { 
+    if (pythonExecutable.isEmpty()) {
       throw new IOException("Python seems not to be available!");
     }
     // Check version
-    PythonUtils.run(pythonExecutable,"--version", os, null);
+    PythonUtils.run(pythonExecutable, "--version", os, null);
     String version = os.toString();
     os.flush();
-    
+
     System.out.println("Location of python: " + pythonExecutable);
     System.out.println("Version of python: " + version);
     PYTHON_EXECUTABLE = pythonExecutable;
   }
-  
+
   @AfterClass
   public static void tearDownClass() {
   }
-  
+
   @Before
   public void setUp() {
   }
-  
+
   @After
   public void tearDown() {
   }
@@ -75,8 +78,16 @@ public class PythonUtilsTest {
    * Test of run method, of class PythonUtils.
    */
   @Test
-  public void testRun_Constructor() {
-    assertNotNull(new PythonUtils());
+  public void testRun_Constructor() throws Throwable {
+    System.out.println("Test constructor");
+    Constructor<PythonUtils> c = PythonUtils.class.getDeclaredConstructor();
+    c.setAccessible(true);
+    try {
+      PythonUtils iu = c.newInstance();
+      assertTrue(false);
+    } catch (InvocationTargetException ite) {
+      assertTrue(true);
+    }
   }
 
   /**

@@ -10,8 +10,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-- The mappings directory is now a subdirectory of the installation directory by default.
 
+## [1.0.0] - date 2023-12-18
+### Added
+- Enable authentication for RabbitMQ 
+- Add interface description
+
+### Changed
+- The mappings directory is now a subdirectory of the installation directory by default.
+- Bump actions/checkout from 3 to 4
+- Bump actions/setup-java from 3 to 4
+- Bump crazy-max/ghaction-docker-meta from 4 to 5
+- Bump docker/build-push-action from 4 to 5
+- Bump docker/setup-buildx-action from 2 to 3
+- Bump docker/setup-qemu-action from 2 to 3
+- Bump github/codeql-action from 2 to 3
+- Bump com.google.guava:guava from 32.1.1-jre to 32.1.3-jre
+- Bump com.h2database:h2 from 2.2.220 to 2.2.224
+- Bump de.codecentric:spring-boot-admin-starter-client from 3.0.4 to 3.1.8
+- Bump edu.kit.datamanager:generic-message-consumer from 1.0.0 to 1.1.1
+- Bump io.freefair.lombok from 8.1.0 to 8.4
+- Bump io.freefair.maven-publish-java from 8.1.0 to 8.4
+- Bump io.spring.dependency-management from 1.1.2 to 1.1.4
+- Bump javersVersion from 7.3.0 to 7.3.6
+- Bump org.apache.tika:tika-core from 2.8.0 to 2.9.1
+- Bump org.json:json from 20230618 to 20231013
+- Bump org.mockito:mockito-core from 5.4.0 to 5.8.0
+- Bump org.owasp.dependencycheck from 8.3.1 to 9.0.6
+- Bump org.postgresql:postgresql from 42.6.0 to 42.7.1
+- Bump org.springframework.boot from 3.1.2 to 3.2.0
+- Bump org.springframework:spring-messaging from 6.0.2 to 6.1.2
+- Bump org.springframework.cloud:spring-cloud-gateway-mvc from 4.0.6 to 4.1.0
+- Bump org.springframework.data:spring-data-elasticsearch from 5.1.2 to 5.2.0
+- Bump org.springframework.restdocs:spring-restdocs-mockmvc from 3.0.0 to 3.0.1
+- Bump springDocVersion from 2.1.0 to 2.3.0
+- Bump elasticsearch instance for test from 7.9.3 to 8.11.1
+
+### Fixed
+- Settings for health check.
+ 
 ## [0.9.0] - date 2023-07-25
 Update service to Spring Boot 3.
 ### Changed
@@ -98,7 +135,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.9.0...v1.0.0
 [0.9.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.3...v0.9.0
 [0.1.3]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.1...v0.1.2

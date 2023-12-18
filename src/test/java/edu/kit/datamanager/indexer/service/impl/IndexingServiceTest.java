@@ -123,7 +123,7 @@ public class IndexingServiceTest {
     IndexingService is = new IndexingService(ap);
     is.uploadToElastic(jsonDocument, index, documentId);
     ResponseEntity<String> fromElastic = is.getFromElastic(index, documentId);
-    assertEquals("HTTP status is not 200!", fromElastic.getStatusCodeValue(), HttpStatus.OK.value());
+    assertEquals("HTTP status is not 200!", fromElastic.getStatusCode().value(), HttpStatus.OK.value());
     String result = is.getDocumentFromResponse(fromElastic);
     assertEquals("Index document is not identical to json document!", jsonDocument, result);
   }
@@ -139,7 +139,7 @@ public class IndexingServiceTest {
     IndexingService is = new IndexingService(ap);
     is.uploadToElastic(jsonDocument, index, documentId);
     ResponseEntity<String> fromElastic = is.getFromElastic(index, documentId);
-    assertEquals("HTTP status is not 200!", fromElastic.getStatusCodeValue(), HttpStatus.OK.value());
+    assertEquals("HTTP status is not 200!", fromElastic.getStatusCode().value(), HttpStatus.OK.value());
     String result = is.getDocumentFromResponse(fromElastic);
     assertEquals("Index document is not identical to json document!", jsonDocument, result);
   }

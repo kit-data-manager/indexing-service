@@ -23,15 +23,8 @@ import edu.kit.datamanager.indexer.consumer.IConsumerEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
-import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
 import edu.kit.datamanager.indexer.configuration.ApplicationProperties;
-import edu.kit.datamanager.indexer.service.impl.MappingService;
-
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,41 +34,37 @@ import org.slf4j.LoggerFactory;
 @Component
 public class RecordMessageHandler implements IMessageHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RecordMessageHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RecordMessageHandler.class);
 
-    private Handlebars hb;
+  private Handlebars hb;
 
-    @Autowired
-    private ApplicationProperties properties;
+  @Autowired
+  private ApplicationProperties properties;
 
-    @Autowired
-    private IConsumerEngine consumer;
+  @Autowired
+  private IConsumerEngine consumer;
 
-    RecordMessageHandler(ApplicationProperties configuration) {
-         properties = configuration;
+  RecordMessageHandler(ApplicationProperties configuration) {
+    properties = configuration;
+  }
+
+  @Override
+  public RESULT handle(BasicMessage message) {
+    LOG.debug("Successfully received message with routing key {}.", message.getRoutingKey());
+
+    String resourceUrlAsString = message.getMetadata().get("resolvingUrl");
+    String mappingId = message.getMetadata().get("schemaId");
+    if ((resourceUrlAsString == null) || (mappingId == null)) {
+      return RESULT.REJECTED;
     }
 
-    @Override
-    public RESULT handle(BasicMessage message) {
-        LOG.debug("Successfully received message with routing key {}.", message.getRoutingKey());
-        
-        String resourceUrlAsString = message.getMetadata().get("resolvingUrl");
-        String mappingId = message.getMetadata().get("schemaId");
-        if ((resourceUrlAsString == null) || (mappingId == null)) {
-          return RESULT.REJECTED;
-        }
-        
-         // guards which decide to reject early
-        // TODO fix message receiving, ideally without casting.
-        // if (message.getEntityName() != "pidrecord") {
-        // LOG.debug("Reject message: Entity name was {}", message.getEntityName());
-        // return RESULT.REJECTED;
-        // }
-        if (!MessageHandlerUtils.isAddressed(this.getHandlerIdentifier(), message)) {
-            LOG.debug("Reject message: Not addressed correctly");
-            return RESULT.REJECTED;
-        }
-        LOG.debug("This message is for me: {}", message);
+    // guards which decide to reject early
+    // TODO fix message receiving, ideally without casting.
+    if (!MessageHandlerUtils.isAddressed(this.getHandlerIdentifier(), message)) {
+      LOG.debug("Reject message: Not addressed correctly");
+      return RESULT.REJECTED;
+    }
+    LOG.debug("This message is for me: {}", message);
 
 //        // 1. Download record
 //        Optional<String> record_json = this.downloadResource(message.getMetadata().get("resolvingUrl"));
@@ -116,15 +105,13 @@ public class RecordMessageHandler implements IMessageHandler {
 //        // 4. Send to elasticsearch (consumer impl?)
 //        Optional<String> response = this.uploadToElastic(elastic_string, this.pidToSimpleString(pid));
 //        LOG.debug("Elastic says: {}", response);
+    return RESULT.SUCCEEDED;
+  }
 
-        return RESULT.SUCCEEDED;
-    }
-
-    @Override
-    public boolean configure() {
-        boolean everythingWorks = true;
-        return everythingWorks;
-    }
+  @Override
+  public boolean configure() {
+    return true;
+  }
 //
 //    /**
 //     * Transforms a given PID to a filename where the record with this PID can be
