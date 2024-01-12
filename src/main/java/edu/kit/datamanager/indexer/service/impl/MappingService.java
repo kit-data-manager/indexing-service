@@ -27,7 +27,6 @@ import edu.kit.datamanager.indexer.exception.IndexerException;
 import edu.kit.datamanager.indexer.mapping.Mapping;
 import edu.kit.datamanager.indexer.mapping.MappingUtil;
 import edu.kit.datamanager.indexer.util.IndexerUtil;
-import static edu.kit.datamanager.indexer.util.IndexerUtil.DEFAULT_SUFFIX;
 import edu.kit.datamanager.indexer.util.TokenUtil;
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +47,6 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,11 +57,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MappingService {
-
-  /**
-   * Instance holding all settings.
-   */
-  private final ApplicationProperties applicationProperties;
 
   /**
    * Repo holding all MappingRecords.
@@ -93,7 +86,6 @@ public class MappingService {
 
   @Autowired
   public MappingService(ApplicationProperties applicationProperties) throws URISyntaxException {
-    this.applicationProperties = applicationProperties;
     init(applicationProperties);
   }
 
@@ -102,6 +94,7 @@ public class MappingService {
    *
    * @param content Content of the mapping file.
    * @param mappingRecord record of the mapping
+   * @throws java.io.IOException Error writing file
    */
   public void createMapping(String content, MappingRecord mappingRecord) throws IOException {
     // Right now only one mapping per mappingID is allowed. May change in future.
@@ -118,7 +111,8 @@ public class MappingService {
    * Update content of mapping file and get the mapping location.
    *
    * @param content Content of the mapping file.
-   * @param mappingRecord record of the mapping
+   * @param mappingRecord record of the mapping.
+   * @throws java.io.IOException Error reading/writing file.
    */
   public void updateMapping(String content, MappingRecord mappingRecord) throws IOException {
     Optional<MappingRecord> findMapping = mappingRepo.findByMappingIdAndMappingType(mappingRecord.getMappingId(), mappingRecord.getMappingType());
@@ -134,6 +128,7 @@ public class MappingService {
    * Delete mapping file and its record.
    *
    * @param mappingRecord record of the mapping
+   * @throws java.io.IOException Error reading file.
    */
   public void deleteMapping(MappingRecord mappingRecord) throws IOException {
     Optional<MappingRecord> findMapping = mappingRepo.findByMappingIdAndMappingType(mappingRecord.getMappingId(), mappingRecord.getMappingType());
@@ -158,7 +153,7 @@ public class MappingService {
   public Optional<Path> executeMapping(URI contentUrl, String mappingId, String mappingType) {
     Optional<Path> returnValue;
     Optional<Path> download = IndexerUtil.downloadResource(contentUrl, tokenUtil);
-    MappingRecord mappingRecord = null;
+    MappingRecord mappingRecord;
 
     if (download.isPresent()) {
       LOGGER.trace("Execute Mapping for '{}', and mapping '{}/{}'.", contentUrl.toString(), mappingId, mappingType);
@@ -236,8 +231,6 @@ public class MappingService {
   private AclRecord getAclRecord(URI contentUrl, TokenUtil tokenUtil) {
     AclRecord aclRecord = null;
     if (contentUrl != null) {
-      String suffix = FilenameUtils.getExtension(contentUrl.getPath());
-      suffix = suffix.trim().isEmpty() ? DEFAULT_SUFFIX : "." + suffix;
       String compactToken = tokenUtil == null ? null : tokenUtil.getCompactToken(30);
       if (contentUrl.getHost() != null) {
         SimpleServiceClient ssc = SimpleServiceClient.create(contentUrl.toString());
@@ -281,7 +274,7 @@ public class MappingService {
    * @throws IOException error writing file.
    */
   private void saveMappingFile(String content, MappingRecord mapping) throws IOException {
-    Path newMappingFile = null;
+    Path newMappingFile;
     if ((content != null) && (mapping != null) && (mapping.getMappingId() != null) && (mapping.getMappingType() != null)) {
       LOGGER.debug("Storing mapping file with id '{}' and type '{}'", mapping.getMappingId(), mapping.getMappingType());
       LOGGER.trace("Content of mapping: '{}'", content);

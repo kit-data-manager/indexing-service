@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [1.0.1] - date 2024-01-12
+### Changed
+- Use softlink to jar file in start script.
+- Switch to GitHub Packages.
+- Bump com.google.guava:guava from 32.1.3-jre to 33.0.0-jre
+- Bump de.codecentric:spring-boot-admin-starter-client from 3.1.8 to 3.2.1
+- Bump elasticsearch instance for test from 7.9.3 to 8.11.1
+- Bump javersVersion from 7.3.6 to 7.3.7
+- Bump org.asciidoctor.jvm.convert from 3.3.2 to 4.0.1
+- Bump org.owasp.dependencycheck from 9.0.6 to 9.0.8
+- Bump org.springframework.boot from 3.2.0 to 3.2.1
+- Bump org.springframework.cloud:spring-cloud-gateway-mvc from 4.1.0 to 4.1.1
+- Bump org.springframework.data:spring-data-elasticsearch from 5.2.1 to 5.2.2
+- Bump org.springframework:spring-messaging from 6.1.2 to 6.1.3 
+
 ## [1.0.0] - date 2023-12-18
 ### Added
 - Enable authentication for RabbitMQ 
@@ -135,7 +150,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.9.0...v1.0.0
 [0.9.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.3...v0.9.0
 [0.1.3]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.2...v0.1.3

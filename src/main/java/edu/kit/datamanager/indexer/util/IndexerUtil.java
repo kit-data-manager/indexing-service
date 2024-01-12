@@ -107,8 +107,8 @@ public class IndexerUtil {
         }
       }
     } catch (Throwable tw) {
-      LOGGER.error("Error reading URI '" + resourceURL.toString() + "'", tw);
-      throw new IndexerException("Error downloading resource from '" + resourceURL.toString() + "'!", tw);
+      LOGGER.error("Error reading URI '" + resourceURL + "'", tw);
+      throw new IndexerException("Error downloading resource from '" + resourceURL + "'!", tw);
     }
     downloadedFile = fixFileExtension(downloadedFile);
 
