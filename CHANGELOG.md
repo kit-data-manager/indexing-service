@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [1.0.1] - date 2024-01-12
+### Changed
+- Use softlink to jar file in start script.
+- Switch to GitHub Packages.
+
 ## [1.0.0] - date 2023-12-18
 ### Added
 - Enable authentication for RabbitMQ 
@@ -135,7 +140,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.9.0...v1.0.0
 [0.9.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.3...v0.9.0
 [0.1.3]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.2...v0.1.3

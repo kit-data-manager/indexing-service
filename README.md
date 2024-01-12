@@ -4,9 +4,14 @@
 [![codecov](https://codecov.io/gh/kit-data-manager/indexing-service/graph/badge.svg)](https://codecov.io/gh/kit-data-manager/indexing-service)
 [![CodeQL](https://github.com/kit-data-manager/indexing-service/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/kit-data-manager/indexing-service/actions/workflows/codeql-analysis.yml)
 ![License](https://img.shields.io/github/license/kit-data-manager/indexing-service.svg)
-[![Docker Build Status](https://img.shields.io/docker/automated/kitdm/indexing-service)](https://hub.docker.com/r/kitdm/indexing-service/tags)
-[![Docker Image Version](https://img.shields.io/docker/v/kitdm/indexing-service/latest)](https://hub.docker.com/r/kitdm/indexing-service/tags)
-[![Docker Pulls](https://img.shields.io/docker/pulls/kitdm/indexing-service)](https://hub.docker.com/r/kitdm/indexing-service/tags)
+[![docker]](https://github.com/kit-data-manager/indexing-service/pkgs/container/indexing-service)
+[![currentVersion]](https://github.com/kit-data-manager/indexing-service/pkgs/container/indexing-service)
+[![size]](https://github.com/kit-data-manager/indexing-service/pkgs/container/indexing-service)
+
+
+[docker]: <https://ghcr-badge.egpl.dev/kit-data-manager/indexing-service/tags?trim=major&color=steelblue&ignore=main,latest&label=docker versions>
+[currentVersion]: <https://ghcr-badge.egpl.dev/kit-data-manager/indexing-service/latest_tag?trim=major&color=steelblue&label=current version>
+[size]: <https://ghcr-badge.egpl.dev/kit-data-manager/indexing-service/size?color=steelblue&label=size>
 
 
 :information_source:
