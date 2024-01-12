@@ -112,7 +112,6 @@ checkParameters "$*"
 
 printInfo "Build microservice of $REPO_NAME at '$INSTALLATION_DIRECTORY'"
 
-
 ################################################################################
 # Build service
 ################################################################################
