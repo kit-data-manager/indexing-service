@@ -17,7 +17,7 @@
 ################################################################################
 function usage {
 ################################################################################
-  echo "Script for creating indexing-service."
+  echo "Script for creating $REPO_NAME service."
   echo "USAGE:"
   echo "  $0 [/path/to/installation/dir]"
   echo "IMPORTANT: Please enter an empty or new directory as installation directory."
@@ -63,8 +63,7 @@ function checkParameters {
      exit 1
   fi
   # Convert variable of installation directory to an absolute path
-  cd "$INSTALLATION_DIRECTORY" || { echo "Failure changing to directory $INSTALLATION_DIRECTORY"; ex
-it 1; }
+  cd "$INSTALLATION_DIRECTORY" || { echo "Failure changing to directory $INSTALLATION_DIRECTORY"; exit 1; }
   INSTALLATION_DIRECTORY=$(pwd)
   cd "$ACTUAL_DIR" || { echo "Failure changing to directory $ACTUAL_DIR"; exit 1; }
 }
@@ -100,16 +99,16 @@ done
 ACTUAL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 ################################################################################
-# Check parameters
-################################################################################
-checkParameters "$*"
-
-################################################################################
 # Determine repo name 
 ################################################################################
 REPO_NAME=$(./gradlew -q printProjectName)
 # Use only last line
 REPO_NAME=${REPO_NAME##*$'\n'}
+
+################################################################################
+# Check parameters
+################################################################################
+checkParameters "$*"
 
 printInfo "Build microservice of $REPO_NAME at '$INSTALLATION_DIRECTORY'"
 
@@ -156,6 +155,8 @@ cd "$INSTALLATION_DIRECTORY" || { echo "Failure changing to directory $INSTALLAT
 
 # Determine name of jar file.
 jarFile=($(ls "$REPO_NAME"*.jar))
+# Create soft link for jar file
+ln -s ${jarFile[0]} $REPO_NAME.jar
 
 {
   echo "#!/bin/bash"                                                                             
@@ -173,7 +174,7 @@ jarFile=($(ls "$REPO_NAME"*.jar))
   echo "################################################################################"        
   echo "# Define jar file"                                                                       
   echo "################################################################################"        
-  echo "jarFile=${jarFile[0]}"
+  echo "jarFile=${REPO_NAME}.jar"
   echo " "                                                                                       
   echo "################################################################################"        
   echo "# Determine directory of script."                                                        
