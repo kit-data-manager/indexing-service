@@ -64,7 +64,7 @@ docker run -d --hostname rabbitmq --net $DOCKER_NETWORK --name $DOCKER_RABBIT -p
 
 echo "Start metaStore2..."
 deleteDockerContainer $DOCKER_METASTORE
-docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/metastore2/config --net $DOCKER_NETWORK --name $DOCKER_METASTORE -p8040:8040 kitdm/metastore2:latest
+docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/metastore2/config --net $DOCKER_NETWORK --name $DOCKER_METASTORE -p8040:8040 ghcr.io/kit-data-manager/metastore2:latest
 
 echo "Start elasticsearch server..."
 deleteDockerContainer $DOCKER_ELASTIC
@@ -72,7 +72,7 @@ docker run -d --net $DOCKER_NETWORK --name $DOCKER_ELASTIC  -p 9200:9200 -p 9300
 
 echo "Start Indexing-Service..."
 deleteDockerContainer $DOCKER_INDEXING
-docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/indexing-service/config --net $DOCKER_NETWORK --name $DOCKER_INDEXING  -p 8050:8050 kitdm/indexing-service:latest
+docker run -d -v "$ACTUAL_DIR/settings/metastore":/spring/indexing-service/config --net $DOCKER_NETWORK --name $DOCKER_INDEXING  -p 8050:8050 ghcr.io/kit-data-manager/indexing-service:latest
 
 #printInfo "Ready to use metastore"
 }
