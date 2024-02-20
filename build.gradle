@@ -80,7 +80,7 @@ dependencies {
     implementation "commons-codec:commons-codec:1.16.0"
   
     implementation "com.github.jknack:handlebars:4.3.1"
-    implementation "org.json:json:20231013"
+    implementation "org.json:json:20240205"
   
     // javers
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
