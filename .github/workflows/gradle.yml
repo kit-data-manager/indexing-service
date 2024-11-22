@@ -5,13 +5,13 @@ name: build
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main ]
   pull_request:
-    branches: [ master, main, development ]
+    branches: [ main, development ]
 
 env:
     # JDK version used for building jar file
-    currentBuildVersion: 17
+    currentBuildVersion: 21
 jobs:
   build:
     runs-on: ${{ matrix.operating-system }}
@@ -20,7 +20,7 @@ jobs:
 #        operating-system: [ubuntu-latest, macOS-latest, windows-latest]
         operating-system: [ubuntu-latest]
          # Use both LTS releases and latest one for tests
-        jdk: [ 17, 19 ]
+        jdk: [ 21, 23 ]
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
@@ -76,6 +76,6 @@ jobs:
     - name: Build with Gradle (JDK ${{ env.currentBuildVersion }})
       run: ./gradlew clean check jacocoTestReport
     - name: Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v5
       with:
         files: ./build/reports/jacoco/test/jacocoTestReport.xml #optional
