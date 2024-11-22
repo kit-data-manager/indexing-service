@@ -11,6 +11,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [1.0.2] - date 2024-11-22
+### Changed
+- Update python Docker tag to v3.13 
+- Upgrade to Java 21.
+- Update dependency gradle to v8.11.1
+
+### Libs
+- Bump com.github.jknack:handlebars from 4.3.1 to 4.4.0
+- Bump com.gorylenko.gradle-git-properties from 2.4.1 to 2.4.2 
+- Bump commons-codec:commons-codec from 1.16.0 to 1.16.1 
+- Update dependency edu.kit.datamanager:service-base to v1.3.2
+- Update plugin io.freefair.lombok to v8.11 
+- Update plugin io.freefair.maven-publish-java to v8.11 
+- Update javersVersion to v7.7.0
+- Update dependency org.apache.tika:tika-core to v3
+- Bump org.asciidoctor.jvm.convert from 4.0.1 to 4.0.2
+- Bump org.json:json from 20231013 to 20240205 
+- Bump org.mockito:mockito-core from 5.8.0 to 5.10.0 
+- Bump org.owasp.dependencycheck from 9.0.8 to 9.0.9 
+- Bump org.postgresql:postgresql from 42.7.1 to 42.7.3 
+- Update plugin org.springframework.boot to v3.3.6
+- Bump org.springframework.data:spring-data-elasticsearch from 5.2.2 to 5.2.3.
+- Bump org.springframework:spring-messaging from 6.1.3 to 6.1.6
+
+### Github Actions
+- Bump codecov/codecov-action from 3 to 4 
+
 ## [1.0.1] - date 2024-01-12
 ### Changed
 - Use softlink to jar file in start script.
@@ -150,7 +177,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.9.0...v1.0.0
 [0.9.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.1.3...v0.9.0
