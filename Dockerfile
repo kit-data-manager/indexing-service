@@ -19,7 +19,8 @@ LABEL stage=build-env
 RUN apt-get update && \
     apt-get upgrade --no-install-recommends --assume-yes && \
     apt-get install --no-install-recommends --assume-yes git && \
-    apt-get install --no-install-recommends --assume-yes openjdk-17-jdk && \
+    wget https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb && \
+    dpkg -i jdk-21_linux-x64_bin.deb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -67,7 +68,8 @@ ENV REPO_PORT=${REPO_PORT_DEFAULT}
 # Install JDK17
 RUN apt-get update && \
     apt-get upgrade --no-install-recommends --assume-yes && \
-    apt-get install --no-install-recommends --assume-yes openjdk-17-jdk && \
+    wget https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb && \
+    dpkg -i jdk-21_linux-x64_bin.deb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
     
