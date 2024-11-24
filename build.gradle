@@ -14,7 +14,7 @@ plugins {
 ext {
   // versions of dependencies
   javersVersion     = '7.7.0'
-  springDocVersion  = '2.6.0'
+  springDocVersion  = '2.7.0'
 }
 
 description = 'Generic indexing service supporting different mapping implementations.'
