@@ -65,7 +65,6 @@ public class MetastoreMessageHandler implements IMessageHandler {
 
   public static final String RESOURCE_URL = "resolvingUrl";
   public static final String MAPPING_ID = "documentType";
-  private static final String MAPPING_URL_APPENDIX = "/api/v1/schemas/";
 
   MetastoreMessageHandler(ApplicationProperties configuration, MappingService mappingService, IndexingService indexingService) {
     properties = configuration;
@@ -89,13 +88,8 @@ public class MetastoreMessageHandler implements IMessageHandler {
       return RESULT.REJECTED;
     }
 
-    int beginIndex = mappingId.indexOf(MAPPING_URL_APPENDIX);
+    int beginIndex = mappingId.lastIndexOf("/") + 1;
     int endIndex = mappingId.indexOf("?", beginIndex);
-    if (beginIndex > 0) {
-      beginIndex += MAPPING_URL_APPENDIX.length();
-    } else {
-      beginIndex = 0;
-    }
     if (endIndex < 0) {
       endIndex = mappingId.length();
     }
@@ -126,7 +120,8 @@ public class MetastoreMessageHandler implements IMessageHandler {
       }
 
       String jsonDocument = FileUtils.readFileToString(resultPath.toFile(), StandardCharsets.UTF_8);
-      elasticsearchService.uploadToElastic(jsonDocument, index, properties.getElasticsearchType(), resourceUrlAsString);
+      String resourceUrlAsStringWithoutVersion = removeFilterFromUri(resourceUrlAsString);
+      elasticsearchService.uploadToElastic(jsonDocument, index, properties.getElasticsearchType(), resourceUrlAsStringWithoutVersion);
 
     } catch (URISyntaxException ex) {
       String errorMessage = String.format("Error downloading content from '%s': %s", resourceUrlAsString, ex.getMessage());
@@ -148,4 +143,18 @@ public class MetastoreMessageHandler implements IMessageHandler {
   public boolean configure() {
     return true;
   }
+    
+  /**
+   * Remove version and other stuff added to the URI.
+   * @param uri URI of the object.
+   * @return  URI without additional parameter.
+   */
+  public String removeFilterFromUri(String uri) {
+    String strippedUri = null;
+    if (uri != null) {
+      strippedUri = uri.split("\\?", -1)[0];
+    }
+    return strippedUri;
+  }
+
 }
