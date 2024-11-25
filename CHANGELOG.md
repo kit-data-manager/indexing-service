@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [1.0.3] - date 2024-11-25
+### Fixed
+- Properties for messages now containing URLs as before
+
 ## [1.0.2] - date 2024-11-22
 ### Changed
 - Update python Docker tag to v3.13 
@@ -177,7 +181,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/kit-data-manager/indexing-service/compare/v0.9.0...v1.0.0
