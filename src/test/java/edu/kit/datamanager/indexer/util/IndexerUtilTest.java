@@ -15,6 +15,7 @@
  */
 package edu.kit.datamanager.indexer.util;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.google.common.io.Files;
 import edu.kit.datamanager.indexer.exception.IndexerException;
 import java.io.File;
@@ -32,15 +33,33 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author hartmann-v
  */
+@RunWith(SpringRunner.class)
+@AutoConfigureWireMock(port = 0)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public class IndexerUtilTest {
 
   TokenUtil tokenUtil = new TokenUtil(null);
+
+  int port;
+
+  @Autowired
+  WireMockServer wireMockServer;
 
   public IndexerUtilTest() {
   }
@@ -83,7 +102,13 @@ public class IndexerUtilTest {
   @Test
   public void testDownloadResource() throws URISyntaxException {
     System.out.println("downloadResource");
-    URI resourceURL = new URI("https://www.example.org");
+    port = wireMockServer.port();
+    System.out.println("port: " + port);
+    stubFor(get(urlEqualTo("/any")).willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "text/html")
+            .withBody("any content")));
+    URI resourceURL = new URI("http://localhost:" + port + "/any");
     Optional<Path> result = IndexerUtil.downloadResource(resourceURL);
     assertTrue("No file available!", result.isPresent());
     assertTrue("File '" + result.get().toString() + "' doesn't exist!", result.get().toFile().exists());
@@ -96,8 +121,14 @@ public class IndexerUtilTest {
    */
   @Test
   public void testDownloadResourceWithPath() throws URISyntaxException {
-    System.out.println("downloadResource");
-    URI resourceURL = new URI("https://www.example.org/index.html");
+    System.out.println("downloadResourceWithPath");
+    port = wireMockServer.port();
+    System.out.println("port: " + port);
+    stubFor(get(urlEqualTo("/index.html")).willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "text/html")
+            .withBody("<!doctype html><html>any content</html>")));
+    URI resourceURL = new URI("http://localhost:" + port + "/index.html");
     Optional<Path> result = IndexerUtil.downloadResource(resourceURL);
     assertTrue("No file available!", result.isPresent());
     assertTrue("File '" + result.get().toString() + "' doesn't exist!", result.get().toFile().exists());
@@ -113,7 +144,7 @@ public class IndexerUtilTest {
     System.out.println("testDownloadInvalidResource");
 
     try {
-      URI resourceURL = new URI("https://invalidhttpaddress.de");
+      URI resourceURL = new URI("https://anyhttpaddress.invalid");
       Optional<Path> result = IndexerUtil.downloadResource(resourceURL);
       assertTrue(false);
     } catch (IndexerException ie) {
