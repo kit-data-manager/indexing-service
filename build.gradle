@@ -1,5 +1,5 @@
 plugins { 
-    id "org.springframework.boot" version "3.5.14"
+    id "org.springframework.boot" version "3.5.15"
     id "io.spring.dependency-management" version "1.1.7" 
     id "io.freefair.lombok" version "8.11"
     id "io.freefair.maven-publish-java" version "8.11"
@@ -73,13 +73,13 @@ dependencies {
     // driver for postgres
     implementation "org.postgresql:postgresql:42.7.11"
     //driver for h2
-    implementation "com.h2database:h2:2.3.232"
+    implementation "com.h2database:h2:2.4.240"
     
     //apache
     implementation "org.apache.tika:tika-core:3.3.1"
     implementation "commons-codec:commons-codec:1.22.0"
   
-    implementation "com.github.jknack:handlebars:4.4.0"
+    implementation "com.github.jknack:handlebars:4.5.1"
     implementation "org.json:json:20240303"
   
     // javers
@@ -97,7 +97,7 @@ dependencies {
     runtimeOnly    'org.apache.httpcomponents:httpclient:4.5.14'
 
     // Additional libraries for tests
-    testImplementation "com.google.guava:guava:33.4.8-jre"
+    testImplementation "com.google.guava:guava:33.6.0-jre"
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock:4.3.4"
    
     //Java 11 Support 
