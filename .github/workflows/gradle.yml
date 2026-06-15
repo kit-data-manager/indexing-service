@@ -20,7 +20,7 @@ jobs:
 #        operating-system: [ubuntu-latest, macOS-latest, windows-latest]
         operating-system: [ubuntu-latest]
          # Use both LTS releases and latest one for tests
-        jdk: [ 21, 23 ]
+        jdk: [ 21, 25, 26 ]
     steps:
     - name: Checkout repo
       uses: actions/checkout@v6
