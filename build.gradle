@@ -73,7 +73,7 @@ dependencies {
     // driver for postgres
     implementation "org.postgresql:postgresql:42.7.11"
     //driver for h2
-    implementation "com.h2database:h2:2.3.232"
+    implementation "com.h2database:h2:2.4.240"
     
     //apache
     implementation "org.apache.tika:tika-core:3.3.1"
