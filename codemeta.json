@@ -5,7 +5,7 @@
     "codeRepository": "https://github.com/kit-data-manager/indexing-service.git",
     "name": "indexing-service",
     "dateCreated": "2020-08-19",
-    "description": "A standalone service which receives messages about changes in metadata documents maps them to a common format and ingests them into elasticsearch."
+    "description": "A standalone service which receives messages about changes in metadata documents maps them to a common format and ingests them into elasticsearch.",
     "author": [
         {
             "@type": "Person",
@@ -14,7 +14,10 @@
             "email": "volker.hartmann@kit.edu",
             "@id": "https://orcid.org/0000-0001-6383-5214",
             "identifier": "https://orcid.org/0000-0001-6383-5214",
-            "affiliation": "Karlsruhe Institute of Technology (KIT)"
+            "affiliation": {
+                "type": "Organization",
+                "name": "Karlsruhe Institute of Technology (KIT)"
+            }
         },
         {
             "@type": "Person",
@@ -23,7 +26,22 @@
             "email": "thomas.jejkal@kit.edu",
             "@id": "https://orcid.org/0000-0003-2804-688X",
             "identifier": "https://orcid.org/0000-0003-2804-688X",
-            "affiliation": "Karlsruhe Institute of Technology (KIT)"
+            "affiliation": {
+                "type": "Organization",
+                "name": "Karlsruhe Institute of Technology (KIT)"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Andreas",
+            "familyName": "Pfeil",
+            "email": "andreas.pfeil@kit.edu",
+            "@id": "https://orcid.org/0000-0001-6575-1022",
+            "identifier": "https://orcid.org/0000-0001-6575-1022",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Karlsruhe Institute of Technology (KIT)"
+            }
         }
     ],
     "maintainer": [
@@ -34,7 +52,10 @@
             "email": "volker.hartmann@kit.edu",
             "@id": "https://orcid.org/0000-0001-6383-5214",
             "identifier": "https://orcid.org/0000-0001-6383-5214",
-            "affiliation": "Karlsruhe Institute of Technology (KIT)"
+            "affiliation": {
+                "type": "Organization",
+                "name": "Karlsruhe Institute of Technology (KIT)"
+            }
         },
         {
             "@type": "Person",
@@ -43,29 +64,24 @@
             "email": "thomas.jejkal@kit.edu",
             "@id": "https://orcid.org/0000-0003-2804-688X",
             "identifier": "https://orcid.org/0000-0003-2804-688X",
-            "affiliation": "Karlsruhe Institute of Technology (KIT)"
+            "affiliation": {
+                "type": "Organization",
+                "name": "Karlsruhe Institute of Technology (KIT)"
+            }
         }
     ],
     "funder": [
         {
             "@type": "Organization",
             "name": "Helmholtz Association of German Research Centers",
-            "identifier": {
-                "@type": "PropertyValue",
-                "propertyID": "ROR",
-                "value": "https://ror.org/0281dp749"
-            },
-            "sameAs": "https://www.helmholtz.de/"
+            "@id": "https://ror.org/0281dp749",
+            "url": "https://www.helmholtz.de/"
         },
         {
             "@type": "Organization",
             "name": "Helmholtz Metadata Collaboration (HMC)",
-            "identifier": {
-                "@type": "PropertyValue",
-                "propertyID": "ROR",
-                "value": "https://ror.org/04v4h0v24"
-            },
-            "sameAs": "https://helmholtz-metadaten.de/"
+            "@id": "https://ror.org/04v4h0v24",
+            "url": "https://helmholtz-metadaten.de/"
         }
     ],
     "keywords": [
@@ -79,7 +95,7 @@
     "license": "https://spdx.org/licenses/Apache-2.0",
     "runtimePlatform": "JVM",
     "softwareRequirements": [
-        "Java 21 or higher"
+        "https://www.oracle.com/java/technologies/downloads/#java21"
     ],
     "developmentStatus": "Inactive",
     "issueTracker": "https://github.com/kit-data-manager/JSONPatch/issues",
