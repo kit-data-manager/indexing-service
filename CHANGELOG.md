@@ -11,6 +11,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [1.0.4] - date 2026-06-16
+### Fixed
+
+### Changed
+- Switch to Java 21 as minimum version.
+### Libs
+- Update dependency com.github.jknack:handlebars to v4.5.1
+- Update dependency com.google.guava:guava to v33.6.0-jre
+- Update dependency com.h2database:h2 to v2.4.240
+- Update dependency commons-codec:commons-codec to v1.22.0
+- Update dependency de.codecentric:spring-boot-admin-starter-client to v3.5.9
+- Update dependency edu.kit.datamanager:repo-core to v1.2.7
+- Update dependency edu.kit.datamanager:service-base to v1.3.6
+- Update dependency gradle to v9
+- Update dependency jacoco to v0.8.15
+- Update dependency org.apache.tika:tika-core to v3.3.1
+- Update dependency org.mockito:mockito-core to v5.23.0
+- Update dependency org.postgresql:postgresql to v42.7.11
+- Update dependency org.springframework:spring-messaging to v6.2.19
+- Update dependency org.springframework.cloud:spring-cloud-contract-wiremock to v4.3.4
+- Update dependency org.springframework.cloud:spring-cloud-gateway-mvc to v4.3.5
+- Update dependency org.springframework.data:spring-data-elasticsearch to v5.5.12
+- Update dependency org.springframework.restdocs:spring-restdocs-mockmvc to v3.0.6
+ - Update javersVersion to v7.11.4
+- Update python Docker tag to v3.14
+- Update springDocVersion to v2.8.17
+
+### Plugins
+- Update plugin com.gorylenko.gradle-git-properties to v4
+- Update plugin io.freefair.lombok to v9
+- Update plugin io.freefair.maven-publish-java to v9
+- Update plugin io.spring.dependency-management to v1.1.7
+- Update plugin net.researchgate.release to v3.1.0
+- Update plugin org.asciidoctor.jvm.convert to v4.0.5
+- Update plugin org.owasp.dependencycheck to v12
+- Update plugin org.springframework.boot to v3.5.15
+
+
+### Github Actions
+- Update actions/checkout action to v6
+- Update actions/setup-java action to v5
+- Update codecov/codecov-action action to v7
+- Update docker/build-push-action action to v7
+- Update docker/login-action action to v4
+- Update docker/metadata-action action to v6
+- Update github/codeql-action action to v4
+
 ## [1.0.3] - date 2024-11-25
 ### Fixed
 - Properties for messages now containing URLs as before
@@ -181,7 +228,8 @@ and mapping of metadata documents delivered by RabbitMQ
 - Mapping of metadata documents with Gemma
 - Ingest to elasticsearch
 
-[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kit-data-manager/indexing-service/compare/v1.0.0...v1.0.1
