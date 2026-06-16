@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Switch to Java 21 as minimum version.
+- Disable PR limit for renovate.
 
 ### Libs
 - Update dependency com.github.jknack:handlebars to v4.5.1
