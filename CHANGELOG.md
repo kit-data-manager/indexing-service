@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Switch to Java 21 as minimum version.
+
 ### Libs
 - Update dependency com.github.jknack:handlebars to v4.5.1
 - Update dependency com.google.guava:guava to v33.6.0-jre
@@ -34,8 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update dependency org.springframework.cloud:spring-cloud-gateway-mvc to v4.3.5
 - Update dependency org.springframework.data:spring-data-elasticsearch to v5.5.12
 - Update dependency org.springframework.restdocs:spring-restdocs-mockmvc to v3.0.6
- - Update javersVersion to v7.11.4
-- Update python Docker tag to v3.14
+- Update javersVersion to v7.11.4
 - Update springDocVersion to v2.8.17
 
 ### Plugins
@@ -57,6 +57,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update docker/login-action action to v4
 - Update docker/metadata-action action to v6
 - Update github/codeql-action action to v4
+
+### Docker
+- Update eclipse-temurin Docker tag to v25
 
 ## [1.0.3] - date 2024-11-25
 ### Fixed
