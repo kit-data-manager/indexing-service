@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.4] - date 2026-06-16
 ### Fixed
 
+### Added
+- Add codemeta.json
+
 ### Changed
 - Switch to Java 21 as minimum version.
 
