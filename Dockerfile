@@ -11,7 +11,7 @@ ARG SERVICE_ROOT_DIRECTORY_DEFAULT=/spring/
 ####################################################
 # Building java environment with git & python
 ####################################################
-FROM eclipse-temurin:21-jdk AS build-env-java
+FROM eclipse-temurin:26-jdk AS build-env-java
 LABEL maintainer=webmaster@datamanager.kit.edu
 LABEL stage=build-env
 
@@ -49,7 +49,7 @@ RUN bash ./build4docker.sh $SERVICE_DIRECTORY
 ####################################################
 # Runtime environment 4 indexing-service
 ####################################################
-FROM eclipse-temurin:21-jdk AS run-service-indexing
+FROM eclipse-temurin:26-jdk AS run-service-indexing
 LABEL maintainer=webmaster@datamanager.kit.edu
 LABEL stage=run
 
