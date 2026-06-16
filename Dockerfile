@@ -9,20 +9,18 @@ ARG SERVICE_ROOT_DIRECTORY_DEFAULT=/spring/
 ####################################################
 
 ####################################################
-# Building environment (java & git)
+# Building java environment with git & python
 ####################################################
-FROM python:3.14 AS build-env-java
+FROM eclipse-temurin:21-jdk AS build-env-java
 LABEL maintainer=webmaster@datamanager.kit.edu
 LABEL stage=build-env
 
-# Install git as additional requirement
+# Install git and Python as additional requirement
 RUN apt-get update && \
     apt-get upgrade --no-install-recommends --assume-yes && \
     apt-get install --no-install-recommends --assume-yes git && \
-    wget https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb && \
-    dpkg -i jdk-21_linux-x64_bin.deb && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y python3 python3-pip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ####################################################
 # Building service
@@ -51,7 +49,7 @@ RUN bash ./build4docker.sh $SERVICE_DIRECTORY
 ####################################################
 # Runtime environment 4 indexing-service
 ####################################################
-FROM python:3.14 AS run-service-indexing
+FROM eclipse-temurin:21-jdk AS run-service-indexing
 LABEL maintainer=webmaster@datamanager.kit.edu
 LABEL stage=run
 
@@ -65,15 +63,19 @@ ENV REPO_NAME=${REPO_NAME_DEFAULT}
 ENV SERVICE_DIRECTORY=${SERVICE_ROOT_DIRECTORY_DEFAULT}${REPO_NAME}
 ENV REPO_PORT=${REPO_PORT_DEFAULT}
 
-# Install JDK17
+# Install Python
 RUN apt-get update && \
     apt-get upgrade --no-install-recommends --assume-yes && \
-    wget https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb && \
-    dpkg -i jdk-21_linux-x64_bin.deb && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y python3 python3-pip python3-venv && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Create venv
+RUN python3 -m venv /opt/venv
+
+# Adapt PATH
+ENV PATH="/opt/venv/bin:$PATH"
     
-# Install python3 & pip3 as additional requirement
+# Install additional requirements
 RUN pip3 install --no-cache-dir xmltodict==0.13.0 wget==3.2
 
 # Copy service from build container
